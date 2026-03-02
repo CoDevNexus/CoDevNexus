@@ -14,6 +14,13 @@ define('MIN_PHP', '8.1.0');
 
 session_start();
 
+// ── Reset forzado (elimina sesión de instalación anterior) ───
+if (isset($_GET['force'])) {
+    $_SESSION = [];
+    session_destroy();
+    session_start();
+}
+
 // ── Si ya está instalado, bloquear ───────────────────────────
 if (file_exists(LOCK_FILE) && !isset($_GET['force'])) {
     die('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Ya instalado</title>
