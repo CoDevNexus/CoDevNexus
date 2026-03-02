@@ -1,14 +1,13 @@
-# El .htaccess de la raiz maneja todo el enrutamiento cuando el dominio
-# apunta a la raiz del proyecto (no a public/).
-# El bloque de rewrite esta comentado para evitar conflicto con el root .htaccess.
-
-# <IfModule mod_rewrite.c>
-#     RewriteEngine On
-#     RewriteBase /
-#     RewriteCond %{REQUEST_FILENAME} !-f
-#     RewriteCond %{REQUEST_FILENAME} !-d
-#     RewriteRule ^ index.php [L,QSA]
-# </IfModule>
+# ── Front-controller rewrite ─────────────────────────────
+# Activo para Laragon (docroot = public/) y compatible con Hostinger
+# (en Hostinger, index.php es archivo real → !-f lo bloquea, no interfiere).
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
 
 # ── Headers de seguridad HTTP ─────────────────────────────
 <IfModule mod_headers.c>
