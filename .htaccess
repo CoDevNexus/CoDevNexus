@@ -5,12 +5,13 @@
     RewriteEngine On
     RewriteBase /
 
-    # Sirve archivos/directorios reales de la raíz directamente
-    # (ej: .well-known/acme-challenge para SSL)
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # Todo lo demás → public/
+    # 1. Sirve archivos estáticos reales que existan en public/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f
     RewriteRule ^(.*)$ public/$1 [L,QSA]
+
+    # 2. Todo lo demás (rutas PHP) → public/index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ public/index.php [L,QSA]
 </IfModule>

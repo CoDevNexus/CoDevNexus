@@ -1,15 +1,14 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
+# El .htaccess de la raiz maneja todo el enrutamiento cuando el dominio
+# apunta a la raiz del proyecto (no a public/).
+# El bloque de rewrite esta comentado para evitar conflicto con el root .htaccess.
 
-    # No reescribir assets o archivos reales
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ index.php [L,QSA]
-</IfModule>
-
-# ── Bloquear ejecución PHP en /uploads (via uploads/.htaccess) ────────────────
-# La carpeta public/uploads/ tiene su propio .htaccess con Require all denied
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteBase /
+#     RewriteCond %{REQUEST_FILENAME} !-f
+#     RewriteCond %{REQUEST_FILENAME} !-d
+#     RewriteRule ^ index.php [L,QSA]
+# </IfModule>
 
 # ── Headers de seguridad HTTP ─────────────────────────────
 <IfModule mod_headers.c>
@@ -18,12 +17,6 @@
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set X-XSS-Protection "1; mode=block"
 </IfModule>
-
-# ── Forzar HTTPS en producción (descomentarlo en prod) ────
-# <IfModule mod_rewrite.c>
-#     RewriteCond %{HTTPS} off
-#     RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
-# </IfModule>
 
 # ── Tiempo de expiración de assets ───────────────────────
 <IfModule mod_expires.c>
