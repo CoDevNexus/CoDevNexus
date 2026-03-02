@@ -134,11 +134,9 @@ img { max-width: 100%; height: auto; }
   min-height: 1.8em;
   letter-spacing: .05em;
 }
-.typewriter-cursor {
+.typewriter-cursor,
+.cursor {
   display: inline-block;
-  width: 2px;
-  height: 1.2em;
-  background: var(--cyan);
   vertical-align: text-bottom;
   animation: cursor-blink .7s step-start infinite;
 }

@@ -188,6 +188,15 @@
       if (c.startsWith('{')) { const d = JSON.parse(c); heroIcono = d.icono||''; heroTexto = d.texto||''; }
       else { heroTexto = c; }
     } catch(e) { heroTexto = s.contenido || ''; }
+
+    // Typewriter config (needs to be before innerHTML template)
+    const twLines = (temaData.typewriter_lines || 'Desarrollador Web,IoT,Redes')
+      .split(',').map(l => l.trim()).filter(Boolean);
+    const twSpeed = parseInt(temaData.typewriter_speed || 80);
+    const twPause = parseInt(temaData.typewriter_pause || 1800);
+    const twColor = temaData.typewriter_color || '#00d4ff';
+    const twSize  = parseFloat(temaData.typewriter_size  || 1.25);
+
     // Usa site_name y site_tagline del API de marca; el titulo de seccion es solo etiqueta admin
     const siteName    = marcaData.site_name    || 'CoDevNexus';
     const siteTagline = marcaData.site_tagline  || '';
@@ -198,7 +207,7 @@
         ${heroIcono ? `<div class="hero-icon"><i class="${esc(heroIcono)}"></i></div>` : ''}
         <h1 class="hero-title">${esc(siteName)}</h1>
         <p class="hero-sub">
-          <span id="typewriter"></span><span class="cursor">|</span>
+          <span id="typewriter" class="typewriter"></span><span class="cursor" style="color:${twColor}">|</span>
         </p>
         ${heroTexto ? `<div class="hero-text">${heroTexto}</div>` : ''}
         <div class="hero-actions">
@@ -218,20 +227,16 @@
     }
 
     // Typewriter
-    const lines = (temaData.typewriter_lines || 'Desarrollador Web,IoT,Redes')
-      .split(',').map(l => l.trim()).filter(Boolean);
-    const twSpeed = parseInt(temaData.typewriter_speed || 80);
-    const twPause = parseInt(temaData.typewriter_pause || 1800);
-    const twColor = temaData.typewriter_color || '#00d4ff';
-    const twSize  = parseFloat(temaData.typewriter_size  || 1.25);
-    const twEl    = document.getElementById('typewriter');
+    const lines = twLines;
+    const twEl = el.querySelector('#typewriter');
     if (twEl) {
       twEl.style.color    = twColor;
       twEl.style.fontSize = twSize + 'rem';
       const cursorEl = twEl.nextElementSibling;
       if (cursorEl && cursorEl.classList.contains('cursor')) cursorEl.style.color = twColor;
     }
-    setTimeout(() => typewriter(twEl, lines, twSpeed, twPause), 400);
+    // Init typewriter after section is appended to DOM
+    requestAnimationFrame(() => setTimeout(() => typewriter(twEl, lines, twSpeed, twPause), 200));
 
     return el;
   }
