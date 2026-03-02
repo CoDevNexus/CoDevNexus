@@ -15,10 +15,16 @@ define('MIN_PHP', '8.1.0');
 session_start();
 
 // ── Reset forzado (elimina sesión de instalación anterior) ───
-if (isset($_GET['force'])) {
+// Solo en GET para no interferir con los POST de los formularios.
+// Redirige sin ?force para que los forms no lo incluyan en el action.
+if (isset($_GET['force']) && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $_SESSION = [];
     session_destroy();
-    session_start();
+    // Eliminar lock y config si existen (reinstalación completa)
+    if (file_exists(LOCK_FILE))   @unlink(LOCK_FILE);
+    if (file_exists(CONFIG_FILE)) @unlink(CONFIG_FILE);
+    header('Location: install.php');
+    exit;
 }
 
 // ── Si ya está instalado, bloquear ───────────────────────────
