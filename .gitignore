@@ -1,0 +1,27 @@
+# Environment & credentials
+config/config.php
+
+# Deployment tools — elimina install.php DESPUÉS de instalar
+# (se incluye en el repo para permitir instalaciones nuevas)
+# public/install.php
+
+# Uploaded files (keep directory structure)
+public/uploads/portafolio/*
+public/uploads/tecnologias/*
+public/uploads/branding/*
+!public/uploads/**/.gitkeep
+!public/uploads/.htaccess
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*~
