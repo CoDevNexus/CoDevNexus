@@ -1,16 +1,16 @@
-Options -Indexes
-
 # ── Redirige todo al front-controller en public/ ─────────────────────────────
-# Necesario cuando el DocumentRoot del servidor apunta a la raíz del proyecto
-# en lugar de apuntar directamente a public/.
+# Necesario cuando el DocumentRoot apunta a la raíz del proyecto.
 
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
 
-# Si el archivo/directorio existe realmente en la raíz, sérvelo directo
-# (ej: .well-known/acme-challenge para certificados SSL)
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
+    # Sirve archivos/directorios reales de la raíz directamente
+    # (ej: .well-known/acme-challenge para SSL)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
 
-# Todo lo demás → public/
-RewriteRule ^(.*)$ public/$1 [L]
+    # Todo lo demás → public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>

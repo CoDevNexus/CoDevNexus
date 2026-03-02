@@ -1,14 +1,13 @@
-Options -Indexes
-Options -MultiViews
+<IfModule mod_rewrite.c>
+    Options -MultiViews
+    RewriteEngine On
+    RewriteBase /
 
-# ── Rewrite todo a index.php ──────────────────────────────
-RewriteEngine On
-RewriteBase /
-
-# No reescribir assets o archivos reales
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [L,QSA]
+    # No reescribir assets o archivos reales
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
 
 # ── Bloquear ejecución PHP en /uploads (via uploads/.htaccess) ────────────────
 # La carpeta public/uploads/ tiene su propio .htaccess con Require all denied
