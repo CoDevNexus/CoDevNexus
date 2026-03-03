@@ -5,7 +5,7 @@
   <a href="/admin/portafolio" class="btn btn-secondary">← Volver</a>
 </div>
 
-<form method="POST" action="/admin/portafolio/store" class="admin-form">
+<form method="POST" action="/admin/portafolio/store" class="admin-form" autocomplete="off">
   <?= Security::csrfField() ?>
 
   <div class="form-row">
@@ -47,8 +47,8 @@
     <button type="button" onclick="openMediaForField('campo-imagen-url','img-preview-portafolio')" class="btn btn-secondary">
       <i class="ri-image-add-line"></i> Seleccionar / Subir Imagen
     </button>
-    <img id="img-preview-portafolio" style="display:none;max-width:200px;border-radius:8px;margin-top:.5rem;display:block">
-    <input type="hidden" id="campo-imagen-url" name="imagen_url_externa">
+    <img id="img-preview-portafolio" style="display:none;max-width:200px;border-radius:8px;margin-top:.5rem">
+    <input type="hidden" id="campo-imagen-url" name="imagen_url_externa" autocomplete="off">
   </div>
 
   <div class="form-row">
@@ -104,8 +104,18 @@ document.querySelector('form').addEventListener('submit', () => {
     editorMode === 'html' ? document.getElementById('raw-html').value : quill.root.innerHTML;
 });
 // Sync preview when URL filled externally
-document.getElementById('campo-imagen-url').addEventListener('change', function() {
+document.getElementById('campo-imagen-url').addEventListener('input', function() {
   const p = document.getElementById('img-preview-portafolio');
   p.src = this.value; p.style.display = this.value ? 'block' : 'none';
+});
+// Reset form state when page is loaded from bfcache (Firefox/Safari)
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) {
+    const campo  = document.getElementById('campo-imagen-url');
+    const preview = document.getElementById('img-preview-portafolio');
+    campo.value          = '';
+    preview.src          = '';
+    preview.style.display = 'none';
+  }
 });
 </script>

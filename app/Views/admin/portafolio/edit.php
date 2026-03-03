@@ -5,7 +5,7 @@
   <a href="/admin/portafolio" class="btn btn-secondary">← Volver</a>
 </div>
 
-<form method="POST" action="/admin/portafolio/update/<?= (int)$proyecto['id'] ?>" class="admin-form">
+<form method="POST" action="/admin/portafolio/update/<?= (int)$proyecto['id'] ?>" class="admin-form" autocomplete="off">
   <?= Security::csrfField() ?>
 
   <div class="form-row">
@@ -50,7 +50,7 @@
     <img id="img-preview-portafolio"
          src="<?= Security::escape($proyecto['imagen_url'] ?? '') ?>"
          style="<?= $proyecto['imagen_url'] ? 'display:block' : 'display:none' ?>;max-width:200px;border-radius:8px;margin-top:.5rem">
-    <input type="hidden" id="campo-imagen-url" name="imagen_url_externa"
+    <input type="hidden" id="campo-imagen-url" name="imagen_url_externa" autocomplete="off"
            value="<?= Security::escape($proyecto['imagen_url'] ?? '') ?>">
   </div>
 
@@ -108,7 +108,7 @@ document.querySelector('form').addEventListener('submit', () => {
     editorMode === 'html' ? document.getElementById('raw-html').value : quill.root.innerHTML;
 });
 // Sync preview when URL filled externally
-document.getElementById('campo-imagen-url').addEventListener('change', function() {
+document.getElementById('campo-imagen-url').addEventListener('input', function() {
   const p = document.getElementById('img-preview-portafolio');
   p.src = this.value; p.style.display = this.value ? 'block' : 'none';
 });
