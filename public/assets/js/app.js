@@ -473,21 +473,49 @@
   }
 
   /* ── Tecnologías ─────────────────────────────────────────── */
+  /* ── Category label map for tech section ────────────────── */
+  const TECH_CAT_LABELS = {
+    lenguaje:    '👨‍💻 Lenguajes',
+    framework:   '🧩 Frameworks & Librerías',
+    base_datos:  '🗄️ Bases de Datos',
+    red:         '🔌 Redes & Infraestructura',
+    devops:      '☁️ DevOps & Cloud',
+    iot:         '🤖 IoT & Embebido',
+    otro:        '🔧 Otros',
+  };
+
   async function renderTecnologias(s) {
     const el = makeSection('tech-section', s.slug || 'tecnologias');
     el.innerHTML = `
       <div class="container">
         <h2 class="section-title" data-aos="fade-up">${esc(s.titulo || '')}</h2>
-        <div id="tech-grid" class="tech-grid"></div>
+        <div id="tech-groups"></div>
       </div>
     `;
 
     try {
       const data = await apiFetch('/api/tecnologias');
-      const grid = el.querySelector('#tech-grid');
+      const groups = el.querySelector('#tech-groups');
       if (data.success && data.data.length) {
-        data.data.forEach((t, i) => {
-          grid.appendChild(makeTechCard(t, i));
+        // Group by categoria preserving server sort order
+        const grouped = {};
+        const order   = [];
+        data.data.forEach(t => {
+          const cat = t.categoria || 'otro';
+          if (!grouped[cat]) { grouped[cat] = []; order.push(cat); }
+          grouped[cat].push(t);
+        });
+
+        order.forEach((cat, gi) => {
+          const label = TECH_CAT_LABELS[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
+          const section = document.createElement('div');
+          section.className = 'tech-group';
+          section.setAttribute('data-aos', 'fade-up');
+          section.setAttribute('data-aos-delay', gi * 60);
+          section.innerHTML = `<h3 class="tech-group-title">${esc(label)}</h3><div class="tech-grid"></div>`;
+          const grid = section.querySelector('.tech-grid');
+          grouped[cat].forEach((t, i) => grid.appendChild(makeTechCard(t, i)));
+          groups.appendChild(section);
         });
       }
     } catch { /* silent */ }

@@ -315,6 +315,23 @@ section { padding: 5rem 1.5rem; }
 .tag--cat { background: rgba(168,85,247,.12); color: #c084fc; border-color: rgba(168,85,247,.3); }
 
 /* ── Stack (Tecnologías) ─────────────────────────────────── */
+.tech-group {
+  margin-bottom: 2.5rem;
+}
+.tech-group-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  padding-bottom: .45rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+.tech-category { display: none; }  /* hidden — info now in group header */
 .tech-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
