@@ -30,15 +30,17 @@
     <a href="/">
       <img id="site-logo" src="/assets/img/logo.svg" alt="CoDevNexus" class="nav-logo">
     </a>
-    <div class="nav-links" id="nav-links">
-      <a href="#hero"        class="nav-link">Inicio</a>
-      <a href="#sobre"       class="nav-link">Sobre mí</a>
-      <a href="#portafolio"  class="nav-link">Portafolio</a>
-      <a href="#tecnologias" class="nav-link">Tecnologías</a>
-      <a href="#contacto"    class="nav-link">Contacto</a>
-    </div>
     <button class="nav-toggle" id="nav-toggle" aria-label="Menú">☰</button>
   </nav>
+
+  <!-- ── Mobile / Desktop nav links (outside navbar to avoid backdrop-filter containing block) -->
+  <div class="nav-links" id="nav-links">
+    <a href="#hero"        class="nav-link">Inicio</a>
+    <a href="#sobre"       class="nav-link">Sobre mí</a>
+    <a href="#portafolio"  class="nav-link">Portafolio</a>
+    <a href="#tecnologias" class="nav-link">Tecnologías</a>
+    <a href="#contacto"    class="nav-link">Contacto</a>
+  </div>
 
   <!-- ── SPA Shell ─────────────────────────────────────────── -->
   <div id="app">
