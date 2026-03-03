@@ -53,7 +53,7 @@
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <!-- App JS -->
   <script src="/assets/js/particles-config.js?v=3"></script>
-  <script src="/assets/js/app.js?v=11"></script>
+  <script src="/assets/js/app.js?v=12"></script>
   <div id="nav-overlay"></div>
   <script>
     (function() {

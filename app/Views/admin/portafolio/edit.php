@@ -15,11 +15,42 @@
     </div>
     <div class="form-group">
       <label>Categoría</label>
-      <select name="categoria">
-        <?php foreach (['redes','software','iot','automatizacion','web','otro'] as $c): ?>
-          <option value="<?= $c ?>" <?= $proyecto['categoria']===$c ? 'selected' : '' ?>><?= ucfirst($c) ?></option>
+      <?php
+      $cats = [
+        'web'            => '🌐 Web',
+        'movil'          => '📱 Aplicaciones Móviles',
+        'software'       => '💻 Software de Escritorio',
+        'dotnet'         => '🪟 Visual .NET / C#',
+        'redes'          => '🔌 Redes',
+        'iot'            => '🤖 IoT / Embebido',
+        'electronica'    => '⚡ Electrónica',
+        'robotica'       => '🦾 Robótica',
+        'automatizacion' => '⚙️ Automatización',
+        'scripting'      => '📜 Scripts / Bots',
+        'ia'             => '🧠 IA / Machine Learning',
+        'cloud'          => '☁️ Cloud / DevOps',
+        'seguridad'      => '🔒 Ciberseguridad',
+        'bd'             => '🗄️ Bases de Datos',
+        'videojuegos'    => '🎮 Videojuegos',
+        'blockchain'     => '⛓️ Blockchain',
+        'diseno'         => '🎨 Diseño UI/UX',
+        'otro'           => '📦 Otro',
+        '_custom'        => '✏️ Personalizada…',
+      ];
+      $currentCat = $proyecto['categoria'] ?? '';
+      $isKnown    = array_key_exists($currentCat, $cats);
+      $selectVal  = $isKnown ? $currentCat : '_custom';
+      ?>
+      <select name="categoria" id="cat-select" onchange="toggleCustomCat()">
+        <?php foreach ($cats as $val => $lbl): ?>
+          <option value="<?= $val ?>" <?= $selectVal === $val ? 'selected' : '' ?>><?= $lbl ?></option>
         <?php endforeach; ?>
       </select>
+      <input type="text" id="cat-custom" name="categoria_custom"
+             placeholder="Escribe la categoría…"
+             style="display:<?= !$isKnown ? 'block' : 'none' ?>;margin-top:.4rem"
+             maxlength="60"
+             value="<?= !$isKnown ? Security::escape($currentCat) : '' ?>">
     </div>
   </div>
 
@@ -104,6 +135,14 @@ function setEditorMode(mode) {
   editorMode = mode;
 }
 document.querySelector('form').addEventListener('submit', () => {
+  const sel = document.getElementById('cat-select');
+  const custom = document.getElementById('cat-custom');
+  if (sel.value === '_custom' && custom.value.trim()) {
+    const h = document.createElement('input');
+    h.type = 'hidden'; h.name = 'categoria'; h.value = custom.value.trim();
+    document.querySelector('form').appendChild(h);
+    sel.disabled = true;
+  }
   document.getElementById('desc-larga').value =
     editorMode === 'html' ? document.getElementById('raw-html').value : quill.root.innerHTML;
 });
@@ -112,4 +151,10 @@ document.getElementById('campo-imagen-url').addEventListener('input', function()
   const p = document.getElementById('img-preview-portafolio');
   p.src = this.value; p.style.display = this.value ? 'block' : 'none';
 });
+function toggleCustomCat() {
+  const sel    = document.getElementById('cat-select');
+  const custom = document.getElementById('cat-custom');
+  custom.style.display = sel.value === '_custom' ? 'block' : 'none';
+  if (sel.value === '_custom') custom.focus();
+}
 </script>

@@ -25,11 +25,15 @@ class PortafolioController extends Controller
     {
         $imagenUrl = $this->handleImageUpload('portafolio');
 
+        $catRaw    = $this->request->post('categoria', 'otro');
+        $catCustom = Security::sanitize(trim($this->request->post('categoria_custom', '')));
+        $categoria = ($catRaw === '_custom' && $catCustom !== '') ? $catCustom : $catRaw;
+
         (new PortafolioModel())->create([
             'titulo'            => Security::sanitize($this->request->post('titulo', '')),
             'descripcion_corta' => Security::sanitize($this->request->post('descripcion_corta', '')),
             'descripcion_larga' => $this->request->post('descripcion_larga', ''),
-            'categoria'         => $this->request->post('categoria', 'otro'),
+            'categoria'         => $categoria,
             'imagen_url'        => $imagenUrl ?? '',
             'enlace_demo'       => Security::sanitize($this->request->post('enlace_demo', '')),
             'enlace_repo'       => Security::sanitize($this->request->post('enlace_repo', '')),
@@ -60,11 +64,15 @@ class PortafolioController extends Controller
 
         $imagenUrl = $this->handleImageUpload('portafolio') ?? $proyecto['imagen_url'];
 
+        $catRaw    = $this->request->post('categoria', 'otro');
+        $catCustom = Security::sanitize(trim($this->request->post('categoria_custom', '')));
+        $categoria = ($catRaw === '_custom' && $catCustom !== '') ? $catCustom : $catRaw;
+
         $model->update((int) $id, [
             'titulo'            => Security::sanitize($this->request->post('titulo', '')),
             'descripcion_corta' => Security::sanitize($this->request->post('descripcion_corta', '')),
             'descripcion_larga' => $this->request->post('descripcion_larga', ''),
-            'categoria'         => $this->request->post('categoria', 'otro'),
+            'categoria'         => $categoria,
             'imagen_url'        => $imagenUrl,
             'enlace_demo'       => Security::sanitize($this->request->post('enlace_demo', '')),
             'enlace_repo'       => Security::sanitize($this->request->post('enlace_repo', '')),

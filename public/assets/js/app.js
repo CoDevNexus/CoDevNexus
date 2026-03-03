@@ -331,6 +331,29 @@
     return el;
   }
 
+  /* ── Category label map ──────────────────────────────────── */
+  const CAT_LABELS = {
+    web:            'Web',
+    movil:          'Móvil',
+    software:       'Software',
+    dotnet:         '.NET / C#',
+    redes:          'Redes',
+    iot:            'IoT',
+    electronica:    'Electrónica',
+    robotica:       'Robótica',
+    automatizacion: 'Automatización',
+    scripting:      'Scripts / Bots',
+    ia:             'IA / ML',
+    cloud:          'Cloud / DevOps',
+    seguridad:      'Ciberseguridad',
+    bd:             'Bases de Datos',
+    videojuegos:    'Videojuegos',
+    blockchain:     'Blockchain',
+    diseno:         'Diseño UI/UX',
+    otro:           'Otro',
+  };
+  function catLabel(c) { return CAT_LABELS[c] || c; }
+
   /* ── Portafolio ──────────────────────────────────────────── */
   async function renderPortafolio(s) {
     const el = makeSection('portafolio-section', s.slug || 'portafolio');
@@ -373,7 +396,7 @@
       <div class="card-info">
         <h3>${esc(p.titulo)}</h3>
         <p>${esc(p.descripcion_corta || '')}</p>
-        ${p.categoria ? `<div class="card-tags"><span class="tag tag--cat">${esc(p.categoria)}</span></div>` : ''}
+        ${p.categoria ? `<div class="card-tags"><span class="tag tag--cat">${esc(catLabel(p.categoria))}</span></div>` : ''}
       </div>
     `;
     return card;
@@ -438,7 +461,7 @@
         <button class="modal-close" aria-label="Cerrar">✕</button>
         ${imgHtml}
         <h2>${esc(p.titulo)}</h2>
-        ${p.categoria ? `<span class="tag tag--cat" style="margin-bottom:.75rem;display:inline-block">${esc(p.categoria)}</span>` : ''}
+        ${p.categoria ? `<span class="tag tag--cat" style="margin-bottom:.75rem;display:inline-block">${esc(catLabel(p.categoria))}</span>` : ''}
         <div class="modal-body">${p.descripcion_larga || p.descripcion_corta || ''}</div>
         ${demoBtn || repoBtn ? `<div class="modal-links">${demoBtn}${repoBtn}</div>` : ''}
       </div>
