@@ -78,8 +78,8 @@
         links.classList.contains('open') ? closeMenu() : openMenu();
       });
 
-      // Close on any nav link click
-      links.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+      // Close on any nav link click (delegation — app.js rebuilds links dynamically)
+      links.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
 
       // Close on overlay click
       overlay.addEventListener('click', closeMenu);
