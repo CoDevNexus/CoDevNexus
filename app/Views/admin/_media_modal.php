@@ -270,13 +270,18 @@ async function mmLoadRepo() {
         <img src="${img.url}" alt="${img.filename||''}"
           style="width:100%;height:100%;object-fit:cover;display:block"
           loading="lazy"
-          onerror="this.closest('div').style.display='none'">
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;flex-direction:column;gap:.3rem;color:#475569;font-size:.7rem;padding:.4rem;text-align:center">
+          <i class="ri-image-off-line" style="font-size:1.4rem"></i>
+          <span>imgbb</span>
+        </div>
         <div class="mm-repo-ov" style="position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem">
           <i class="ri-check-circle-line" style="color:#00d4ff;font-size:1.5rem"></i>
           <span style="font-size:.7rem;color:#e2e8f0">Usar</span>
         </div>
         <button onclick="mmDeleteRepo(event,${img.id},this.closest('div'))"
-          style="display:none;position:absolute;top:3px;right:3px;background:rgba(239,68,68,.85);border:none;color:#fff;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:.7rem;line-height:1" title="Eliminar">✕</button>`;
+          style="display:none;position:absolute;top:3px;right:3px;background:rgba(239,68,68,.85);border:none;color:#fff;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:.7rem;line-height:1" title="Eliminar">✕</button>
+        <span style="position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,.65);color:${img.driver==='imgbb'?'#7c3aed':'#00d4ff'};font-size:.62rem;padding:.1rem .35rem;border-radius:4px;line-height:1.4">${img.driver==='imgbb'?'ImgBB':'Local'}</span>`;
       item.addEventListener('mouseenter', () => {
         item.style.borderColor = '#00d4ff';
         item.querySelector('.mm-repo-ov').style.opacity = '1';

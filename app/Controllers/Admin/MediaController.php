@@ -24,9 +24,16 @@ class MediaController extends Controller
             return;
         }
 
-        $db     = Database::getInstance();
-        $driver = $db->query("SELECT valor FROM configuracion WHERE clave = 'img_driver' LIMIT 1")
-                       ->fetchColumn() ?: 'local';
+        $db = Database::getInstance();
+
+        // Usar driver enviado desde el modal; si no viene, leer configuración de BD
+        $postDriver = trim($_POST['driver'] ?? '');
+        if (in_array($postDriver, ['local', 'imgbb'], true)) {
+            $driver = $postDriver;
+        } else {
+            $driver = $db->query("SELECT valor FROM configuracion WHERE clave = 'img_driver' LIMIT 1")
+                         ->fetchColumn() ?: 'local';
+        }
 
         $url = ImageUploader::upload($_FILES['file'], $driver, 'media');
 
