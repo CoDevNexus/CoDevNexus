@@ -182,10 +182,10 @@
   function renderHero(s) {
     const el = makeSection('hero', s.slug || 'hero');
     // Decode JSON contenido {icono, texto} or plain HTML
-    let heroIcono = '', heroTexto = '';
+    let heroIcono = '', heroTexto = '', heroParsed = null;
     try {
       const c = (s.contenido || '').trim();
-      if (c.startsWith('{')) { const d = JSON.parse(c); heroIcono = d.icono||''; heroTexto = d.texto||''; }
+      if (c.startsWith('{')) { heroParsed = JSON.parse(c); heroIcono = heroParsed.icono||''; heroTexto = heroParsed.texto||''; }
       else { heroTexto = c; }
     } catch(e) { heroTexto = s.contenido || ''; }
 
@@ -200,20 +200,25 @@
     // Usa site_name y site_tagline del API de marca; el titulo de seccion es solo etiqueta admin
     const siteName    = marcaData.site_name    || 'CoDevNexus';
     const siteTagline = marcaData.site_tagline  || '';
+    // Block order + visibility from saved bloques
+    const _DEFBL = ['badge','icon','title','typewriter','text','actions'];
+    const _rawBL = (heroParsed && Array.isArray(heroParsed.bloques) && heroParsed.bloques.length)
+      ? [...heroParsed.bloques].sort((a,b) => (a.orden??99)-(b.orden??99))
+      : _DEFBL.map((id,i) => ({id, visible:true, orden:i}));
+    const bVis   = {}; _rawBL.forEach(b => { bVis[b.id] = b.visible !== false; });
+    const bOrder = _rawBL.map(b => b.id);
+    const heroParts = {
+      badge:      bVis.badge      && siteTagline ? `<div class="hero-badge">${esc(siteTagline)}</div>` : '',
+      icon:       bVis.icon       && heroIcono   ? `<div class="hero-icon"><i class="${esc(heroIcono)}"></i></div>` : '',
+      title:      bVis.title                     ? `<h1 class="hero-title">${esc(siteName)}</h1>` : '',
+      typewriter: bVis.typewriter                ? `<p class="hero-sub"><span id="typewriter" class="typewriter"></span><span class="cursor" style="color:${twColor}">|</span></p>` : '',
+      text:       bVis.text       && heroTexto   ? `<div class="hero-text">${heroTexto}</div>` : '',
+      actions:    bVis.actions                   ? `<div class="hero-actions"><a href="#portafolio" class="btn-glow">Ver proyectos</a><a href="#contacto" class="btn-outline">Contactar</a></div>` : '',
+    };
     el.innerHTML = `
       <div id="particles-js" class="particles-bg"></div>
       <div class="hero-content" data-aos="fade-up">
-        ${siteTagline ? `<div class="hero-badge">${esc(siteTagline)}</div>` : ''}
-        ${heroIcono ? `<div class="hero-icon"><i class="${esc(heroIcono)}"></i></div>` : ''}
-        <h1 class="hero-title">${esc(siteName)}</h1>
-        <p class="hero-sub">
-          <span id="typewriter" class="typewriter"></span><span class="cursor" style="color:${twColor}">|</span>
-        </p>
-        ${heroTexto ? `<div class="hero-text">${heroTexto}</div>` : ''}
-        <div class="hero-actions">
-          <a href="#portafolio" class="btn-glow">Ver proyectos</a>
-          <a href="#contacto" class="btn-outline">Contactar</a>
-        </div>
+        ${bOrder.map(id => heroParts[id]||'').join('')}
       </div>
     `;
 

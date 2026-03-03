@@ -18,7 +18,29 @@ try {
     }
 } catch (\Throwable) { /* contenido es HTML plano */ }
 
-
+// Bloques hero: orden y visibilidad (solo para tipo hero)
+$heroBloquesDef = [
+  ['id'=>'badge',      'label'=>'Badge / eslogan',   'icon'=>'ri-price-tag-3-line', 'visible'=>true, 'orden'=>0],
+  ['id'=>'icon',       'label'=>'Icono decorativo',  'icon'=>'ri-emotion-line',      'visible'=>true, 'orden'=>1],
+  ['id'=>'title',      'label'=>'Nombre del sitio',  'icon'=>'ri-text',              'visible'=>true, 'orden'=>2],
+  ['id'=>'typewriter', 'label'=>'Efecto typewriter', 'icon'=>'ri-cursor-line',       'visible'=>true, 'orden'=>3],
+  ['id'=>'text',       'label'=>'Texto descriptivo', 'icon'=>'ri-file-text-line',    'visible'=>true, 'orden'=>4],
+  ['id'=>'actions',    'label'=>'Botones CTA',       'icon'=>'ri-mouse-line',        'visible'=>true, 'orden'=>5],
+];
+if ($tipo === 'hero') {
+  $savedMap = [];
+  $savedBlo = (isset($decoded) && is_array($decoded) && !empty($decoded['bloques'])) ? $decoded['bloques'] : [];
+  foreach ($savedBlo as $b) { if (!empty($b['id'])) $savedMap[$b['id']] = $b; }
+  foreach ($heroBloquesDef as &$b) {
+    if (isset($savedMap[$b['id']])) {
+      $b['visible'] = (bool)($savedMap[$b['id']]['visible'] ?? true);
+      $b['orden']   = (int)($savedMap[$b['id']]['orden']   ?? $b['orden']);
+    }
+  }
+  unset($b);
+  usort($heroBloquesDef, fn($a, $b) => $a['orden'] <=> $b['orden']);
+}
+$heroBloques = $heroBloquesDef;
 
 ?>
 
@@ -132,6 +154,41 @@ try {
               require __DIR__ . '/_icon_picker_seccion.php';
             ?>
           </div>
+
+          <?php if ($tipo === 'hero'): ?>
+          <!-- Bloque manager: orden + visibilidad -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem">
+              <span style="font-size:.83rem;font-weight:600;color:#94a3b8"><i class="ri-layout-row-line"></i> Bloques del Hero</span>
+              <span style="font-size:.72rem;color:#475569"><i class="ri-drag-move-2-line"></i> arrastra para reordenar</span>
+            </div>
+            <div id="hb-list" style="display:flex;flex-direction:column;gap:.35rem">
+              <?php foreach ($heroBloques as $hb): ?>
+              <div class="hb-row"
+                data-id="<?= $hb['id'] ?>"
+                data-visible="<?= $hb['visible'] ? '1' : '0' ?>"
+                draggable="true"
+                style="display:flex;align-items:center;gap:.6rem;
+                       background:#0f172a;
+                       border:1px solid <?= $hb['visible'] ? '#2a3f55' : '#1a2332' ?>;
+                       border-radius:8px;padding:.5rem .75rem;
+                       cursor:grab;user-select:none;transition:all .15s">
+                <i class="ri-drag-move-2-line" style="color:#334155;flex-shrink:0;font-size:.9rem"></i>
+                <i class="<?= Security::escape($hb['icon']) ?>" style="color:#475569;flex-shrink:0;font-size:.88rem"></i>
+                <span style="flex:1;font-size:.84rem;color:<?= $hb['visible'] ? '#e2e8f0' : '#475569' ?>"><?= Security::escape($hb['label']) ?></span>
+                <button type="button" class="hb-toggle" title="Mostrar / Ocultar"
+                  style="background:none;
+                         border:1px solid <?= $hb['visible'] ? 'rgba(0,212,255,.4)' : '#1e2d40' ?>;
+                         border-radius:6px;cursor:pointer;padding:.2rem .5rem;
+                         color:<?= $hb['visible'] ? '#00d4ff' : '#334155' ?>;
+                         font-size:.85rem;flex-shrink:0;transition:all .15s">
+                  <i class="<?= $hb['visible'] ? 'ri-eye-line' : 'ri-eye-off-line' ?>"></i>
+                </button>
+              </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+          <?php endif; ?>
 
           <!-- Editor Quill -->
           <div>
@@ -336,13 +393,52 @@ function setRichEditorMode(mode) {
   richEditorMode = mode;
 }
 
-// ── Guardar: serializa icono + texto como JSON en el hidden input del form meta
+// ── Hero block drag-reorder + eye toggle
+const _hbList = document.getElementById('hb-list');
+if (_hbList) {
+  let _hbDrag = null;
+  _hbList.addEventListener('dragstart', e => {
+    _hbDrag = e.target.closest('.hb-row');
+    if (_hbDrag) { _hbDrag.style.opacity = '.35'; _hbDrag.style.cursor = 'grabbing'; }
+  });
+  _hbList.addEventListener('dragend', () => {
+    if (_hbDrag) { _hbDrag.style.opacity = '1'; _hbDrag.style.cursor = 'grab'; _hbDrag = null; }
+  });
+  _hbList.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('.hb-row');
+    if (!target || target === _hbDrag) return;
+    const r = target.getBoundingClientRect();
+    _hbList.insertBefore(_hbDrag, e.clientY < r.top + r.height / 2 ? target : target.nextSibling);
+  });
+  _hbList.addEventListener('click', e => {
+    const btn = e.target.closest('.hb-toggle');
+    if (!btn) return;
+    const row = btn.closest('.hb-row');
+    const on  = row.dataset.visible === '1';
+    row.dataset.visible                   = on ? '0' : '1';
+    btn.querySelector('i').className      = on ? 'ri-eye-off-line' : 'ri-eye-line';
+    btn.style.color                       = on ? '#334155' : '#00d4ff';
+    btn.style.borderColor                 = on ? '#1e2d40' : 'rgba(0,212,255,.4)';
+    row.style.borderColor                 = on ? '#1a2332' : '#2a3f55';
+    row.querySelector('span').style.color = on ? '#475569' : '#e2e8f0';
+  });
+}
+
+// ── Guardar: serializa icono + texto (+ bloques si hero) como JSON
 document.getElementById('save-rich-btn').addEventListener('click', function() {
   const richHtml = richEditorMode === 'html'
     ? document.getElementById('raw-rich-html').value
     : quillRich.root.innerHTML;
-  const payload = JSON.stringify({ icono: selectedIcon, texto: richHtml });
-  document.getElementById('contenido-input').value = payload;
+  const payload = { icono: selectedIcon, texto: richHtml };
+  if (_hbList) {
+    payload.bloques = Array.from(_hbList.querySelectorAll('.hb-row')).map((row, i) => ({
+      id:      row.dataset.id,
+      visible: row.dataset.visible === '1',
+      orden:   i
+    }));
+  }
+  document.getElementById('contenido-input').value = JSON.stringify(payload);
   document.querySelector('.section-edit-meta form').submit();
 });
 </script>
