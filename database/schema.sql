@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `portafolio` (
   `titulo`             VARCHAR(200)     NOT NULL,
   `descripcion_corta`  VARCHAR(300),
   `descripcion_larga`  LONGTEXT,
-  `categoria`          ENUM('redes','software','iot','automatizacion','web','otro') NOT NULL DEFAULT 'otro',
+  `categoria`          VARCHAR(80) NOT NULL DEFAULT 'otro',
   `imagen_url`         VARCHAR(400),
   `enlace_demo`        VARCHAR(400),
   `enlace_repo`        VARCHAR(400),
