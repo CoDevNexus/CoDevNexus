@@ -1,4 +1,4 @@
-﻿<?php use Core\Security; ?>
+﻿?<?php use Core\Security; ?>
 <?php
 $tipo         = $seccion['tipo_seccion'] ?? 'otro';
 $hasRichPanel = in_array($tipo, ['hero', 'sobre']); // editor grande en panel derecho
@@ -10,7 +10,7 @@ $contenidoRaw  = $seccion['contenido'] ?? '';
 $seccionIcono  = '';
 $seccionTexto  = $contenidoRaw;
 try {
-    // NO strip_tags aquÃ­: el JSON puede contener HTML formateado en el campo 'texto'
+    // NO strip_tags aquí: el JSON puede contener HTML formateado en el campo 'texto'
     $decoded = json_decode(trim($contenidoRaw), true, 4, JSON_THROW_ON_ERROR);
     if (is_array($decoded) && isset($decoded['texto'])) {
         $seccionIcono = $decoded['icono'] ?? '';
@@ -29,20 +29,20 @@ try {
 
 <div class="section-edit-layout">
 
-  <!-- â”€â”€ Columna izquierda: metadatos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── Columna izquierda: metadatos ─────────────────────── -->
   <aside class="section-edit-meta">
     <div class="meta-panel">
-      <h4><i class="ri-settings-3-line"></i> ConfiguraciÃ³n</h4>
+      <h4><i class="ri-settings-3-line"></i> Configuración</h4>
       <form method="POST" action="/admin/secciones/update/<?= (int)$seccion['id'] ?>">
         <?= Security::csrfField() ?>
 
         <div class="form-group">
-          <label>TÃ­tulo</label>
+          <label>Título</label>
           <input type="text" name="titulo" value="<?= Security::escape($seccion['titulo']) ?>" required>
         </div>
 
         <div class="form-group">
-          <label>Tipo de secciÃ³n</label>
+          <label>Tipo de sección</label>
           <select name="tipo_seccion">
             <?php foreach (['hero','sobre','portafolio','tecnologias','servicios','contacto','blog','otro'] as $t): ?>
               <option value="<?= $t ?>" <?= $tipo===$t ? 'selected' : '' ?>><?= ucfirst($t) ?></option>
@@ -103,25 +103,25 @@ try {
         <?php elseif (!$hasRichPanel): ?>
           <input type="hidden" name="contenido" value="<?= Security::escape($seccion['contenido'] ?? '') ?>">
           <p style="font-size:.8rem;color:#475569;margin-top:.5rem">
-            <i class="ri-information-line"></i> El contenido de esta secciÃ³n se gestiona desde el panel de la derecha.
+            <i class="ri-information-line"></i> El contenido de esta sección se gestiona desde el panel de la derecha.
           </p>
         <?php endif; ?>
 
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:.75rem">
-          <i class="ri-save-line"></i> Guardar configuraciÃ³n
+          <i class="ri-save-line"></i> Guardar configuración
         </button>
       </form>
     </div>
   </aside>
 
-  <!-- â”€â”€ Columna derecha: panel de Ã­tems â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+  <!-- ── Columna derecha: panel de ítems ──────────────────── -->
   <main class="section-edit-content">
 
     <?php if ($tipo === 'hero' || $tipo === 'sobre'): ?>
       <!-- HERO / SOBRE: editor completo + selector de icono -->
       <div class="items-panel">
         <div class="items-panel-header">
-          <h4><i class="ri-edit-2-line"></i> Contenido <?= $tipo === 'hero' ? 'Â· Hero' : 'Â· Sobre mÃ­' ?></h4>
+          <h4><i class="ri-edit-2-line"></i> Contenido <?= $tipo === 'hero' ? '· Hero' : '· Sobre mí' ?></h4>
         </div>
         <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1.2rem">
 
@@ -136,7 +136,7 @@ try {
           <!-- Editor Quill -->
           <div>
             <div class="editor-mode-bar" style="margin-top:.25rem">
-              <span style="font-size:.78rem;color:#94a3b8"><i class="ri-file-text-line"></i> Texto / descripciÃ³n</span>
+              <span style="font-size:.78rem;color:#94a3b8"><i class="ri-file-text-line"></i> Texto / descripción</span>
               <div class="editor-mode-btns">
                 <button type="button" class="emode-btn active" id="emode-rich-visual" onclick="setRichEditorMode('visual')"><i class="ri-edit-2-line"></i> Visual</button>
                 <button type="button" class="emode-btn" id="emode-rich-html" onclick="setRichEditorMode('html')"><i class="ri-code-line"></i> HTML</button>
@@ -164,7 +164,7 @@ try {
         </div>
         <div class="table-container" style="margin-top:0;border-radius:0;border:none">
           <table class="admin-table">
-            <thead><tr><th>Img</th><th>TÃ­tulo</th><th>CategorÃ­a</th><th>Vis.</th><th></th></tr></thead>
+            <thead><tr><th>Img</th><th>Título</th><th>Categoría</th><th>Vis.</th><th></th></tr></thead>
             <tbody>
             <?php foreach ($items as $p): ?>
               <tr>
@@ -174,13 +174,13 @@ try {
                   <?php else: ?><i class="ri-image-line" style="color:#475569;font-size:1.2rem"></i><?php endif; ?>
                 </td>
                 <td><strong><?= Security::escape($p['titulo']) ?></strong><br>
-                  <small style="color:#64748b"><?= Security::escape(mb_substr($p['descripcion_corta'] ?? '', 0, 50)) ?>â€¦</small>
+                  <small style="color:#64748b"><?= Security::escape(mb_substr($p['descripcion_corta'] ?? '', 0, 50)) ?>…</small>
                 </td>
                 <td><span class="badge-type"><?= Security::escape($p['categoria']) ?></span></td>
                 <td><?= $p['visible'] ? '<i class="ri-eye-line" style="color:#10b981"></i>' : '<i class="ri-eye-off-line" style="color:#475569"></i>' ?></td>
                 <td class="actions">
                   <a href="/admin/portafolio/edit/<?= (int)$p['id'] ?>" class="btn btn-sm btn-secondary"><i class="ri-pencil-line"></i></a>
-                  <form method="POST" action="/admin/portafolio/delete/<?= (int)$p['id'] ?>" style="display:inline" onsubmit="return confirm('Â¿Eliminar?')">
+                  <form method="POST" action="/admin/portafolio/delete/<?= (int)$p['id'] ?>" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
                     <?= Security::csrfField() ?>
                     <button class="btn btn-sm btn-danger"><i class="ri-delete-bin-line"></i></button>
                   </form>
@@ -196,10 +196,10 @@ try {
       </div>
 
     <?php elseif ($tipo === 'tecnologias'): ?>
-      <!-- TECNOLOGÃAS -->
+      <!-- TECNOLOGÍAS -->
       <div class="items-panel">
         <div class="items-panel-header">
-          <h4><i class="ri-cpu-line"></i> TecnologÃ­as <span class="count-badge"><?= count($items) ?></span></h4>
+          <h4><i class="ri-cpu-line"></i> Tecnologías <span class="count-badge"><?= count($items) ?></span></h4>
           <a href="/admin/tecnologias/create" class="btn btn-sm btn-primary"><i class="ri-add-line"></i> Nueva</a>
         </div>
         <div class="table-container" style="margin-top:0;border-radius:0;border:none">
@@ -213,7 +213,7 @@ try {
                     <i class="<?= Security::escape($t['icono_valor'] ?? '') ?>"></i>
                   <?php elseif (!empty($t['icono_valor'])): ?>
                     <?= $t['icono_valor'] ?>
-                  <?php else: ?>â€”<?php endif; ?>
+                  <?php else: ?>—<?php endif; ?>
                 </td>
                 <td><strong><?= Security::escape($t['nombre']) ?></strong></td>
                 <td>
@@ -227,7 +227,7 @@ try {
                 <td><?= ($t['visible'] ?? 1) ? '<i class="ri-eye-line" style="color:#10b981"></i>' : '<i class="ri-eye-off-line" style="color:#475569"></i>' ?></td>
                 <td class="actions">
                   <a href="/admin/tecnologias/edit/<?= (int)$t['id'] ?>" class="btn btn-sm btn-secondary"><i class="ri-pencil-line"></i></a>
-                  <form method="POST" action="/admin/tecnologias/delete/<?= (int)$t['id'] ?>" style="display:inline" onsubmit="return confirm('Â¿Eliminar?')">
+                  <form method="POST" action="/admin/tecnologias/delete/<?= (int)$t['id'] ?>" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
                     <?= Security::csrfField() ?>
                     <button class="btn btn-sm btn-danger"><i class="ri-delete-bin-line"></i></button>
                   </form>
@@ -235,7 +235,7 @@ try {
               </tr>
             <?php endforeach; ?>
             <?php if (empty($items)): ?>
-              <tr><td colspan="5" class="empty">Sin tecnologÃ­as. <a href="/admin/tecnologias/create">Agregar</a></td></tr>
+              <tr><td colspan="5" class="empty">Sin tecnologías. <a href="/admin/tecnologias/create">Agregar</a></td></tr>
             <?php endif; ?>
             </tbody>
           </table>
@@ -251,7 +251,7 @@ try {
         </div>
         <div class="table-container" style="margin-top:0;border-radius:0;border:none">
           <table class="admin-table">
-            <thead><tr><th>Icono</th><th>TÃ­tulo</th><th>DescripciÃ³n</th><th>Items</th><th></th></tr></thead>
+            <thead><tr><th>Icono</th><th>Título</th><th>Descripción</th><th>Items</th><th></th></tr></thead>
             <tbody>
             <?php foreach ($items as $i => $sv):
                     $svKey = urlencode($sv['_id'] ?? (string)$i);
@@ -267,7 +267,7 @@ try {
                 <td><span class="count-badge"><?= count($sv['items'] ?? []) ?></span></td>
                 <td class="actions">
                   <a href="/admin/servicios/edit/<?= $svKey ?>" class="btn btn-sm btn-secondary"><i class="ri-pencil-line"></i></a>
-                  <form method="POST" action="/admin/servicios/delete/<?= $svKey ?>" style="display:inline" onsubmit="return confirm('Â¿Eliminar?')">
+                  <form method="POST" action="/admin/servicios/delete/<?= $svKey ?>" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
                     <?= Security::csrfField() ?>
                     <button class="btn btn-sm btn-danger"><i class="ri-delete-bin-line"></i></button>
                   </form>
@@ -294,7 +294,7 @@ try {
               <?= $seccion['contenido'] ?>
             </div>
           <?php else: ?>
-            <p style="color:#475569;font-size:.85rem">Sin contenido aÃºn. Usa el editor de la izquierda para agregar.</p>
+            <p style="color:#475569;font-size:.85rem">Sin contenido aún. Usa el editor de la izquierda para agregar.</p>
           <?php endif; ?>
         </div>
       </div>
@@ -305,11 +305,11 @@ try {
 
 <?php if ($hasRichPanel): ?>
 <script>
-// â”€â”€ Icon picker: sync selectedIcon via sipOnChange hook
+// ── Icon picker: sync selectedIcon via sipOnChange hook
 window.sipOnChange = function(cls) { selectedIcon = cls; };
 let selectedIcon = <?= json_encode($seccionIcono) ?>;
 
-// â”€â”€ Quill rich editor
+// ── Quill rich editor
 const quillRich = new Quill('#quill-rich-editor', {
   theme: 'snow',
   modules: { toolbar: QUILL_TOOLBAR }
@@ -336,7 +336,7 @@ function setRichEditorMode(mode) {
   richEditorMode = mode;
 }
 
-// â”€â”€ Guardar: serializa icono + texto como JSON en el hidden input del form meta
+// ── Guardar: serializa icono + texto como JSON en el hidden input del form meta
 document.getElementById('save-rich-btn').addEventListener('click', function() {
   const richHtml = richEditorMode === 'html'
     ? document.getElementById('raw-rich-html').value
