@@ -83,17 +83,39 @@ img { max-width: 100%; height: auto; }
   cursor: pointer; padding: .2rem .5rem;
 }
 
+/* ── Overlay for mobile drawer ──────────────────────────── */
+#nav-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 99;
+  backdrop-filter: blur(2px);
+  transition: opacity .3s;
+  opacity: 0;
+}
+#nav-overlay.show { display: block; opacity: 1; }
+
 @media (max-width: 768px) {
   .nav-toggle { display: block; }
   .nav-links {
-    display: none; flex-direction: column; gap: 0;
-    position: absolute; top: 100%; left: 0; right: 0;
-    background: rgba(11,15,25,.97);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 2rem;
+    display: flex; flex-direction: column; gap: 0;
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(280px, 80vw);
+    background: rgba(11,15,25,.98);
+    border-left: 1px solid var(--border);
+    padding: 5rem 1.5rem 2rem;
+    transform: translateX(100%);
+    transition: transform .32s cubic-bezier(.4,0,.2,1);
+    z-index: 200;
+    overflow-y: auto;
   }
-  .nav-links.open { display: flex; }
-  .nav-links a { padding: .7rem 0; border-bottom: 1px solid var(--border); }
+  .nav-links.open { transform: translateX(0); }
+  .nav-links a {
+    padding: .85rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 1rem;
+  }
+  .nav-links a:last-child { border-bottom: none; }
 }
 
 /* ── Hero ────────────────────────────────────────────────── */

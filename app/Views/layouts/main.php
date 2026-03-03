@@ -54,11 +54,39 @@
   <!-- App JS -->
   <script src="/assets/js/particles-config.js?v=3"></script>
   <script src="/assets/js/app.js?v=11"></script>
+  <div id="nav-overlay"></div>
   <script>
-    // Mobile nav toggle
-    document.getElementById('nav-toggle').addEventListener('click', () => {
-      document.getElementById('nav-links').classList.toggle('open');
-    });
+    (function() {
+      const toggle  = document.getElementById('nav-toggle');
+      const links   = document.getElementById('nav-links');
+      const overlay = document.getElementById('nav-overlay');
+
+      function openMenu() {
+        links.classList.add('open');
+        overlay.classList.add('show');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.textContent = '✕';
+      }
+      function closeMenu() {
+        links.classList.remove('open');
+        overlay.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.textContent = '☰';
+      }
+
+      toggle.addEventListener('click', () => {
+        links.classList.contains('open') ? closeMenu() : openMenu();
+      });
+
+      // Close on any nav link click
+      links.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+      // Close on overlay click
+      overlay.addEventListener('click', closeMenu);
+
+      // Close on Escape key
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    })();
   </script>
 </body>
 </html>
