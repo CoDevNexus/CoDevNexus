@@ -33,7 +33,7 @@ function sectionIcon(string $tipo): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="<?= htmlspecialchars(\Core\Security::csrfToken(), ENT_QUOTES) ?>">
+  <meta name="csrf-token" content="<?= htmlspecialchars(\Core\Security::generateCsrfToken(), ENT_QUOTES) ?>">
   <title><?= Security::escape($title ?? 'Admin · CoDevNexus') ?></title>
   <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
   <!-- Remixicon -->
