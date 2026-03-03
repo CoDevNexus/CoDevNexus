@@ -494,3 +494,44 @@ a { text-decoration: none; color: var(--cyan); }
 .driver-card.active .driver-title { color: var(--cyan); }
 .mail-section { animation: fadeIn .15s ease; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+
+/* ── Quill editor dark theme overrides ─────────────────────── */
+.ql-toolbar.ql-snow {
+  background: #1e293b;
+  border: 1px solid #2a3f55 !important;
+  border-bottom: none !important;
+  border-radius: 8px 8px 0 0;
+  flex-wrap: wrap;
+  padding: 6px 8px;
+}
+.ql-container.ql-snow {
+  border: 1px solid #2a3f55 !important;
+  border-radius: 0 0 8px 8px;
+  background: #0f172a;
+}
+.ql-toolbar.ql-snow .ql-formats { margin-right: 8px; margin-bottom: 2px; }
+.ql-toolbar.ql-snow button,
+.ql-toolbar.ql-snow .ql-picker-label { color: #94a3b8 !important; }
+.ql-toolbar.ql-snow button:hover,
+.ql-toolbar.ql-snow button.ql-active,
+.ql-toolbar.ql-snow .ql-picker-label:hover { color: #00d4ff !important; }
+.ql-toolbar.ql-snow button svg .ql-stroke { stroke: #94a3b8; }
+.ql-toolbar.ql-snow button:hover svg .ql-stroke,
+.ql-toolbar.ql-snow button.ql-active svg .ql-stroke { stroke: #00d4ff; }
+.ql-toolbar.ql-snow button svg .ql-fill { fill: #94a3b8; }
+.ql-toolbar.ql-snow button:hover svg .ql-fill,
+.ql-toolbar.ql-snow button.ql-active svg .ql-fill { fill: #00d4ff; }
+.ql-snow .ql-picker { color: #94a3b8; }
+.ql-snow .ql-picker-options {
+  background: #1e293b !important;
+  border: 1px solid #2a3f55 !important;
+  border-radius: 6px;
+}
+.ql-snow .ql-picker-options .ql-picker-item { color: #cbd5e1; }
+.ql-snow .ql-picker-options .ql-picker-item:hover { color: #00d4ff; background: rgba(0,212,255,.07); }
+.ql-editor { color: #e2e8f0; min-height: 180px; font-size: .93rem; line-height: 1.7; }
+.ql-editor.ql-blank::before { color: #475569 !important; font-style: normal; }
+.ql-snow .ql-tooltip { background: #1e293b; border: 1px solid #2a3f55; color: #e2e8f0; border-radius: 6px; }
+.ql-snow .ql-tooltip input[type=text] { background: #0f172a; border: 1px solid #2a3f55; color: #e2e8f0; border-radius: 4px; }
+.ql-snow a { color: #00d4ff; }
+

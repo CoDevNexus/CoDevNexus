@@ -303,6 +303,22 @@ try {
   </main>
 </div>
 
+<?php if ($hasRichPanel || $hasContent): ?>
+<script>
+const QUILL_TOOLBAR = [
+  [{ header: [1, 2, 3, 4, false] }],
+  [{ size: ['small', false, 'large', 'huge'] }],
+  ['bold', 'italic', 'underline', 'strike'],
+  [{ color: [] }, { background: [] }],
+  [{ align: [] }],
+  [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+  ['blockquote', 'code-block'],
+  ['link', 'image', 'video'],
+  ['clean']
+];
+</script>
+<?php endif; ?>
+
 <?php if ($hasRichPanel): ?>
 <script>
 // ── Icon picker: sync selectedIcon via sipOnChange hook
@@ -312,11 +328,7 @@ let selectedIcon = <?= json_encode($seccionIcono) ?>;
 // ── Quill rich editor
 const quillRich = new Quill('#quill-rich-editor', {
   theme: 'snow',
-  modules: {
-    toolbar: [['bold','italic','underline','strike'],['blockquote'],
-              [{ list:'ordered' },{ list:'bullet' }],
-              [{ header:[1,2,3,false] }],['link','clean']]
-  }
+  modules: { toolbar: QUILL_TOOLBAR }
 });
 quillRich.root.innerHTML = <?= json_encode($seccionTexto, JSON_HEX_TAG) ?>;
 
@@ -353,7 +365,10 @@ document.getElementById('save-rich-btn').addEventListener('click', function() {
 
 <?php if ($hasContent): ?>
 <script>
-const quill = new Quill('#quill-editor', { theme: 'snow' });
+const quill = new Quill('#quill-editor', {
+  theme: 'snow',
+  modules: { toolbar: QUILL_TOOLBAR }
+});
 quill.root.innerHTML = <?= json_encode($seccion['contenido'] ?? '', JSON_HEX_TAG) ?>;
 let editorMode = 'visual';
 function setEditorMode(mode) {
