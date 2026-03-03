@@ -146,8 +146,9 @@ document.querySelectorAll('.icon-option').forEach(function(btn) {
 const quillDesc = new Quill('#quill-desc', {
   theme: 'snow',
   placeholder: 'Breve descripción del servicio…',
-  modules: { toolbar: [['bold','italic','underline'],['link'],['clean']] }
+  modules: { toolbar: QUILL_TOOLBAR }
 });
+registerImageHandler(quillDesc);
 quillDesc.root.innerHTML = <?= json_encode(html_entity_decode($servicio['desc'] ?? '', ENT_QUOTES), JSON_HEX_TAG) ?>;
 let editorMode = 'visual';
 function setEditorMode(mode) {

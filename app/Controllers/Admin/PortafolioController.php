@@ -101,12 +101,9 @@ class PortafolioController extends Controller
         $file   = $this->request->file('imagen');
 
         if (!$file || $file['error'] === UPLOAD_ERR_NO_FILE) {
-            // Si ImgBB y se pegó URL externa
-            if ($toggle === 'imgbb') {
-                $extUrl = trim($this->request->post('imagen_url_externa', ''));
-                return $extUrl ?: null;
-            }
-            return null;
+            // Accept an external URL regardless of upload driver (covers media library modal)
+            $extUrl = trim($this->request->post('imagen_url_externa', ''));
+            return $extUrl ?: null;
         }
 
         return ImageUploader::upload($file, $toggle, $folder);

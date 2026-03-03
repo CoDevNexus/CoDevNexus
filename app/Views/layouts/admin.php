@@ -33,6 +33,7 @@ function sectionIcon(string $tipo): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<?= htmlspecialchars(\Core\Security::csrfToken(), ENT_QUOTES) ?>">
   <title><?= Security::escape($title ?? 'Admin · CoDevNexus') ?></title>
   <link rel="icon" href="/assets/img/logo.svg" type="image/svg+xml">
   <!-- Remixicon -->
@@ -596,5 +597,6 @@ function adminToast(icon, title) {
 .raw-html-editor{width:100%;background:#0b0f19;color:#6ee7b7;border:1px solid #1e2d40;border-radius:0 0 6px 6px;padding:.75rem;font-family:'Fira Mono',monospace,monospace;font-size:.82rem;resize:vertical;line-height:1.6;outline:none;transition:border-color .2s}
 .raw-html-editor:focus{border-color:#00d4ff55}
 </style>
+<?php require __DIR__ . '/../admin/_media_modal.php'; ?>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<?php use Core\Security; ?>
+﻿<?php use Core\Security; ?>
 <?php
 $tipo         = $seccion['tipo_seccion'] ?? 'otro';
 $hasRichPanel = in_array($tipo, ['hero', 'sobre']); // editor grande en panel derecho
@@ -10,7 +10,7 @@ $contenidoRaw  = $seccion['contenido'] ?? '';
 $seccionIcono  = '';
 $seccionTexto  = $contenidoRaw;
 try {
-    // NO strip_tags aquí: el JSON puede contener HTML formateado en el campo 'texto'
+    // NO strip_tags aquÃ­: el JSON puede contener HTML formateado en el campo 'texto'
     $decoded = json_decode(trim($contenidoRaw), true, 4, JSON_THROW_ON_ERROR);
     if (is_array($decoded) && isset($decoded['texto'])) {
         $seccionIcono = $decoded['icono'] ?? '';
@@ -29,20 +29,20 @@ try {
 
 <div class="section-edit-layout">
 
-  <!-- ── Columna izquierda: metadatos ─────────────────────── -->
+  <!-- â”€â”€ Columna izquierda: metadatos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <aside class="section-edit-meta">
     <div class="meta-panel">
-      <h4><i class="ri-settings-3-line"></i> Configuración</h4>
+      <h4><i class="ri-settings-3-line"></i> ConfiguraciÃ³n</h4>
       <form method="POST" action="/admin/secciones/update/<?= (int)$seccion['id'] ?>">
         <?= Security::csrfField() ?>
 
         <div class="form-group">
-          <label>Título</label>
+          <label>TÃ­tulo</label>
           <input type="text" name="titulo" value="<?= Security::escape($seccion['titulo']) ?>" required>
         </div>
 
         <div class="form-group">
-          <label>Tipo de sección</label>
+          <label>Tipo de secciÃ³n</label>
           <select name="tipo_seccion">
             <?php foreach (['hero','sobre','portafolio','tecnologias','servicios','contacto','blog','otro'] as $t): ?>
               <option value="<?= $t ?>" <?= $tipo===$t ? 'selected' : '' ?>><?= ucfirst($t) ?></option>
@@ -103,25 +103,25 @@ try {
         <?php elseif (!$hasRichPanel): ?>
           <input type="hidden" name="contenido" value="<?= Security::escape($seccion['contenido'] ?? '') ?>">
           <p style="font-size:.8rem;color:#475569;margin-top:.5rem">
-            <i class="ri-information-line"></i> El contenido de esta sección se gestiona desde el panel de la derecha.
+            <i class="ri-information-line"></i> El contenido de esta secciÃ³n se gestiona desde el panel de la derecha.
           </p>
         <?php endif; ?>
 
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:.75rem">
-          <i class="ri-save-line"></i> Guardar configuración
+          <i class="ri-save-line"></i> Guardar configuraciÃ³n
         </button>
       </form>
     </div>
   </aside>
 
-  <!-- ── Columna derecha: panel de ítems ──────────────────── -->
+  <!-- â”€â”€ Columna derecha: panel de Ã­tems â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
   <main class="section-edit-content">
 
     <?php if ($tipo === 'hero' || $tipo === 'sobre'): ?>
       <!-- HERO / SOBRE: editor completo + selector de icono -->
       <div class="items-panel">
         <div class="items-panel-header">
-          <h4><i class="ri-edit-2-line"></i> Contenido <?= $tipo === 'hero' ? '· Hero' : '· Sobre mí' ?></h4>
+          <h4><i class="ri-edit-2-line"></i> Contenido <?= $tipo === 'hero' ? 'Â· Hero' : 'Â· Sobre mÃ­' ?></h4>
         </div>
         <div style="padding:1.25rem;display:flex;flex-direction:column;gap:1.2rem">
 
@@ -136,7 +136,7 @@ try {
           <!-- Editor Quill -->
           <div>
             <div class="editor-mode-bar" style="margin-top:.25rem">
-              <span style="font-size:.78rem;color:#94a3b8"><i class="ri-file-text-line"></i> Texto / descripción</span>
+              <span style="font-size:.78rem;color:#94a3b8"><i class="ri-file-text-line"></i> Texto / descripciÃ³n</span>
               <div class="editor-mode-btns">
                 <button type="button" class="emode-btn active" id="emode-rich-visual" onclick="setRichEditorMode('visual')"><i class="ri-edit-2-line"></i> Visual</button>
                 <button type="button" class="emode-btn" id="emode-rich-html" onclick="setRichEditorMode('html')"><i class="ri-code-line"></i> HTML</button>
@@ -164,7 +164,7 @@ try {
         </div>
         <div class="table-container" style="margin-top:0;border-radius:0;border:none">
           <table class="admin-table">
-            <thead><tr><th>Img</th><th>Título</th><th>Categoría</th><th>Vis.</th><th></th></tr></thead>
+            <thead><tr><th>Img</th><th>TÃ­tulo</th><th>CategorÃ­a</th><th>Vis.</th><th></th></tr></thead>
             <tbody>
             <?php foreach ($items as $p): ?>
               <tr>
@@ -174,13 +174,13 @@ try {
                   <?php else: ?><i class="ri-image-line" style="color:#475569;font-size:1.2rem"></i><?php endif; ?>
                 </td>
                 <td><strong><?= Security::escape($p['titulo']) ?></strong><br>
-                  <small style="color:#64748b"><?= Security::escape(mb_substr($p['descripcion_corta'] ?? '', 0, 50)) ?>…</small>
+                  <small style="color:#64748b"><?= Security::escape(mb_substr($p['descripcion_corta'] ?? '', 0, 50)) ?>â€¦</small>
                 </td>
                 <td><span class="badge-type"><?= Security::escape($p['categoria']) ?></span></td>
                 <td><?= $p['visible'] ? '<i class="ri-eye-line" style="color:#10b981"></i>' : '<i class="ri-eye-off-line" style="color:#475569"></i>' ?></td>
                 <td class="actions">
                   <a href="/admin/portafolio/edit/<?= (int)$p['id'] ?>" class="btn btn-sm btn-secondary"><i class="ri-pencil-line"></i></a>
-                  <form method="POST" action="/admin/portafolio/delete/<?= (int)$p['id'] ?>" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+                  <form method="POST" action="/admin/portafolio/delete/<?= (int)$p['id'] ?>" style="display:inline" onsubmit="return confirm('Â¿Eliminar?')">
                     <?= Security::csrfField() ?>
                     <button class="btn btn-sm btn-danger"><i class="ri-delete-bin-line"></i></button>
                   </form>
@@ -196,10 +196,10 @@ try {
       </div>
 
     <?php elseif ($tipo === 'tecnologias'): ?>
-      <!-- TECNOLOGÍAS -->
+      <!-- TECNOLOGÃAS -->
       <div class="items-panel">
         <div class="items-panel-header">
-          <h4><i class="ri-cpu-line"></i> Tecnologías <span class="count-badge"><?= count($items) ?></span></h4>
+          <h4><i class="ri-cpu-line"></i> TecnologÃ­as <span class="count-badge"><?= count($items) ?></span></h4>
           <a href="/admin/tecnologias/create" class="btn btn-sm btn-primary"><i class="ri-add-line"></i> Nueva</a>
         </div>
         <div class="table-container" style="margin-top:0;border-radius:0;border:none">
@@ -213,7 +213,7 @@ try {
                     <i class="<?= Security::escape($t['icono_valor'] ?? '') ?>"></i>
                   <?php elseif (!empty($t['icono_valor'])): ?>
                     <?= $t['icono_valor'] ?>
-                  <?php else: ?>—<?php endif; ?>
+                  <?php else: ?>â€”<?php endif; ?>
                 </td>
                 <td><strong><?= Security::escape($t['nombre']) ?></strong></td>
                 <td>
@@ -227,7 +227,7 @@ try {
                 <td><?= ($t['visible'] ?? 1) ? '<i class="ri-eye-line" style="color:#10b981"></i>' : '<i class="ri-eye-off-line" style="color:#475569"></i>' ?></td>
                 <td class="actions">
                   <a href="/admin/tecnologias/edit/<?= (int)$t['id'] ?>" class="btn btn-sm btn-secondary"><i class="ri-pencil-line"></i></a>
-                  <form method="POST" action="/admin/tecnologias/delete/<?= (int)$t['id'] ?>" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+                  <form method="POST" action="/admin/tecnologias/delete/<?= (int)$t['id'] ?>" style="display:inline" onsubmit="return confirm('Â¿Eliminar?')">
                     <?= Security::csrfField() ?>
                     <button class="btn btn-sm btn-danger"><i class="ri-delete-bin-line"></i></button>
                   </form>
@@ -235,7 +235,7 @@ try {
               </tr>
             <?php endforeach; ?>
             <?php if (empty($items)): ?>
-              <tr><td colspan="5" class="empty">Sin tecnologías. <a href="/admin/tecnologias/create">Agregar</a></td></tr>
+              <tr><td colspan="5" class="empty">Sin tecnologÃ­as. <a href="/admin/tecnologias/create">Agregar</a></td></tr>
             <?php endif; ?>
             </tbody>
           </table>
@@ -251,7 +251,7 @@ try {
         </div>
         <div class="table-container" style="margin-top:0;border-radius:0;border:none">
           <table class="admin-table">
-            <thead><tr><th>Icono</th><th>Título</th><th>Descripción</th><th>Items</th><th></th></tr></thead>
+            <thead><tr><th>Icono</th><th>TÃ­tulo</th><th>DescripciÃ³n</th><th>Items</th><th></th></tr></thead>
             <tbody>
             <?php foreach ($items as $i => $sv):
                     $svKey = urlencode($sv['_id'] ?? (string)$i);
@@ -267,7 +267,7 @@ try {
                 <td><span class="count-badge"><?= count($sv['items'] ?? []) ?></span></td>
                 <td class="actions">
                   <a href="/admin/servicios/edit/<?= $svKey ?>" class="btn btn-sm btn-secondary"><i class="ri-pencil-line"></i></a>
-                  <form method="POST" action="/admin/servicios/delete/<?= $svKey ?>" style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+                  <form method="POST" action="/admin/servicios/delete/<?= $svKey ?>" style="display:inline" onsubmit="return confirm('Â¿Eliminar?')">
                     <?= Security::csrfField() ?>
                     <button class="btn btn-sm btn-danger"><i class="ri-delete-bin-line"></i></button>
                   </form>
@@ -294,7 +294,7 @@ try {
               <?= $seccion['contenido'] ?>
             </div>
           <?php else: ?>
-            <p style="color:#475569;font-size:.85rem">Sin contenido aún. Usa el editor de la izquierda para agregar.</p>
+            <p style="color:#475569;font-size:.85rem">Sin contenido aÃºn. Usa el editor de la izquierda para agregar.</p>
           <?php endif; ?>
         </div>
       </div>
@@ -303,250 +303,13 @@ try {
   </main>
 </div>
 
-<?php if ($hasRichPanel || $hasContent): ?>
-
-<!-- ── Modal biblioteca de medios ──────────────────────────── -->
-<div id="media-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);align-items:center;justify-content:center">
-  <div style="background:#111827;border:1px solid #1e2d40;border-radius:14px;width:min(760px,95vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid #1e2d40">
-      <h3 style="margin:0;font-size:.95rem;color:#00d4ff"><i class="ri-image-2-line"></i> Insertar imagen</h3>
-      <button onclick="closeMediaModal()" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
-    </div>
-    <!-- Tabs -->
-    <div style="display:flex;border-bottom:1px solid #1e2d40">
-      <button class="mm-tab active" id="mm-tab-upload" onclick="mmTab('upload')" style="flex:1;padding:.7rem;background:none;border:none;cursor:pointer;color:#00d4ff;border-bottom:2px solid #00d4ff;font-size:.85rem"><i class="ri-upload-2-line"></i> Subir nueva</button>
-      <button class="mm-tab" id="mm-tab-repo"   onclick="mmTab('repo')"   style="flex:1;padding:.7rem;background:none;border:none;cursor:pointer;color:#64748b;border-bottom:2px solid transparent;font-size:.85rem"><i class="ri-grid-line"></i> Repositorio</button>
-    </div>
-    <!-- Panel upload -->
-    <div id="mm-panel-upload" style="padding:1.4rem;display:flex;flex-direction:column;gap:1rem">
-      <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed #2a3f55;border-radius:10px;padding:2rem;cursor:pointer;color:#64748b;gap:.5rem;transition:border-color .2s" id="mm-drop-zone">
-        <input type="file" id="mm-file-input" accept="image/*" style="display:none">
-        <i class="ri-image-add-line" style="font-size:2rem;color:#00d4ff"></i>
-        <span style="font-size:.9rem">Haz clic o arrastra una imagen aquí</span>
-        <span style="font-size:.75rem;color:#475569">JPG, PNG, WEBP, GIF — máx. 5 MB</span>
-      </label>
-      <div id="mm-upload-preview" style="display:none;text-align:center">
-        <img id="mm-preview-img" style="max-height:160px;border-radius:8px;border:1px solid #2a3f55">
-        <p id="mm-preview-name" style="font-size:.8rem;color:#64748b;margin:.4rem 0 0"></p>
-      </div>
-      <div id="mm-upload-progress" style="display:none">
-        <div style="height:4px;background:#1e2d40;border-radius:4px;overflow:hidden">
-          <div id="mm-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#00d4ff,#7c3aed);transition:width .3s"></div>
-        </div>
-        <p style="font-size:.8rem;color:#64748b;margin:.4rem 0 0;text-align:center">Subiendo…</p>
-      </div>
-      <div id="mm-upload-error" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:.6rem .9rem;font-size:.85rem;color:#fca5a5"></div>
-      <button id="mm-upload-btn" onclick="mmUpload()" disabled
-        style="background:linear-gradient(135deg,#00d4ff,#7c3aed);border:none;color:#fff;padding:.65rem 1.4rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:600;opacity:.4">
-        <i class="ri-upload-cloud-line"></i> Subir e insertar
-      </button>
-    </div>
-    <!-- Panel repositorio -->
-    <div id="mm-panel-repo" style="display:none;padding:1rem;overflow-y:auto;flex:1">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-        <span style="font-size:.8rem;color:#64748b" id="mm-repo-count">Cargando…</span>
-        <button onclick="mmLoadRepo()" style="background:none;border:1px solid #2a3f55;color:#94a3b8;padding:.3rem .7rem;border-radius:6px;cursor:pointer;font-size:.78rem"><i class="ri-refresh-line"></i> Actualizar</button>
-      </div>
-      <div id="mm-repo-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem"></div>
-      <p id="mm-repo-empty" style="display:none;text-align:center;color:#475569;font-size:.85rem;padding:2rem">Sin imágenes subidas aún.</p>
-    </div>
-  </div>
-</div>
-
-<script>
-const QUILL_TOOLBAR = [
-  [{ header: [1, 2, 3, 4, false] }],
-  [{ size: ['small', false, 'large', 'huge'] }],
-  ['bold', 'italic', 'underline', 'strike'],
-  [{ color: [] }, { background: [] }],
-  [{ align: [] }],
-  [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-  ['blockquote', 'code-block'],
-  ['link', 'image', 'video'],
-  ['clean']
-];
-
-// ── Media modal ───────────────────────────────────────────────
-let _activeQuill = null;
-
-function openMediaModal(quillInstance) {
-  _activeQuill = quillInstance;
-  document.getElementById('media-modal').style.display = 'flex';
-  mmTab('upload');
-  // Reset upload panel
-  document.getElementById('mm-file-input').value = '';
-  document.getElementById('mm-upload-preview').style.display = 'none';
-  document.getElementById('mm-upload-error').style.display   = 'none';
-  document.getElementById('mm-upload-progress').style.display = 'none';
-  document.getElementById('mm-upload-btn').disabled  = true;
-  document.getElementById('mm-upload-btn').style.opacity = '.4';
-}
-
-function closeMediaModal() {
-  document.getElementById('media-modal').style.display = 'none';
-  _activeQuill = null;
-}
-
-// Cerrar al hacer click fuera del contenido
-document.getElementById('media-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeMediaModal();
-});
-
-function mmTab(tab) {
-  ['upload','repo'].forEach(t => {
-    document.getElementById('mm-panel-' + t).style.display = t === tab ? (t === 'repo' ? 'block' : 'flex') : 'none';
-    const btn = document.getElementById('mm-tab-' + t);
-    btn.style.color        = t === tab ? '#00d4ff' : '#64748b';
-    btn.style.borderBottom = t === tab ? '2px solid #00d4ff' : '2px solid transparent';
-  });
-  if (tab === 'repo') mmLoadRepo();
-}
-
-// ── File pick / drag & drop ───────────────────────────────────
-const mmFileInput = document.getElementById('mm-file-input');
-const mmDropZone  = document.getElementById('mm-drop-zone');
-
-mmDropZone.addEventListener('click', () => mmFileInput.click());
-mmDropZone.addEventListener('dragover', e => { e.preventDefault(); mmDropZone.style.borderColor = '#00d4ff'; });
-mmDropZone.addEventListener('dragleave', () => { mmDropZone.style.borderColor = '#2a3f55'; });
-mmDropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  mmDropZone.style.borderColor = '#2a3f55';
-  if (e.dataTransfer.files[0]) mmSetFile(e.dataTransfer.files[0]);
-});
-mmFileInput.addEventListener('change', () => { if (mmFileInput.files[0]) mmSetFile(mmFileInput.files[0]); });
-
-function mmSetFile(file) {
-  document.getElementById('mm-upload-error').style.display = 'none';
-  const preview = document.getElementById('mm-upload-preview');
-  document.getElementById('mm-preview-img').src  = URL.createObjectURL(file);
-  document.getElementById('mm-preview-name').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-  preview.style.display = 'block';
-  document.getElementById('mm-upload-btn').disabled  = false;
-  document.getElementById('mm-upload-btn').style.opacity = '1';
-}
-
-// ── Upload ────────────────────────────────────────────────────
-async function mmUpload() {
-  const file = mmFileInput.files[0];
-  if (!file) return;
-  document.getElementById('mm-upload-error').style.display   = 'none';
-  document.getElementById('mm-upload-progress').style.display = 'flex';
-  document.getElementById('mm-upload-progress').style.flexDirection = 'column';
-  document.getElementById('mm-upload-btn').disabled = true;
-  document.getElementById('mm-progress-bar').style.width = '30%';
-
-  const fd = new FormData();
-  fd.append('file', file);
-
-  try {
-    const res  = await fetch('/admin/media/upload', { method: 'POST', body: fd });
-    document.getElementById('mm-progress-bar').style.width = '100%';
-    const data = await res.json();
-    if (data.success) {
-      mmInsertImage(data.url);
-      closeMediaModal();
-    } else {
-      showMmError(data.message || 'Error al subir.');
-    }
-  } catch (err) {
-    showMmError('Error de red: ' + err.message);
-  } finally {
-    document.getElementById('mm-upload-progress').style.display = 'none';
-    document.getElementById('mm-upload-btn').disabled = false;
-    document.getElementById('mm-progress-bar').style.width = '0%';
-  }
-}
-
-function showMmError(msg) {
-  const el = document.getElementById('mm-upload-error');
-  el.textContent = '⚠ ' + msg;
-  el.style.display = 'block';
-}
-
-// ── Repositorio ───────────────────────────────────────────────
-async function mmLoadRepo() {
-  document.getElementById('mm-repo-count').textContent = 'Cargando…';
-  document.getElementById('mm-repo-empty').style.display = 'none';
-  document.getElementById('mm-repo-grid').innerHTML = '';
-  try {
-    const res  = await fetch('/admin/media/list');
-    const data = await res.json();
-    const grid = document.getElementById('mm-repo-grid');
-    if (!data.success || !data.data.length) {
-      document.getElementById('mm-repo-empty').style.display = 'block';
-      document.getElementById('mm-repo-count').textContent = '0 imágenes';
-      return;
-    }
-    document.getElementById('mm-repo-count').textContent = data.data.length + ' imagen(es)';
-    data.data.forEach(img => {
-      const item = document.createElement('div');
-      item.style.cssText = 'position:relative;cursor:pointer;border:2px solid #1e2d40;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#0f172a;transition:border-color .15s';
-      item.innerHTML = `
-        <img src="${img.url}" alt="${img.filename || ''}"
-          style="width:100%;height:100%;object-fit:cover;display:block"
-          onerror="this.parentElement.style.display='none'">
-        <div class="mm-repo-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem">
-          <i class="ri-check-line" style="color:#00d4ff;font-size:1.4rem"></i>
-          <span style="font-size:.7rem;color:#e2e8f0">Insertar</span>
-        </div>
-        <button onclick="mmDeleteImg(event,${img.id},this.closest('div'))" title="Eliminar"
-          style="position:absolute;top:3px;right:3px;background:rgba(239,68,68,.8);border:none;color:#fff;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:.75rem;line-height:1;display:none">✕</button>`;
-      item.addEventListener('mouseenter', () => {
-        item.style.borderColor = '#00d4ff';
-        item.querySelector('.mm-repo-overlay').style.opacity = '1';
-        item.querySelector('button').style.display = 'block';
-      });
-      item.addEventListener('mouseleave', () => {
-        item.style.borderColor = '#1e2d40';
-        item.querySelector('.mm-repo-overlay').style.opacity = '0';
-        item.querySelector('button').style.display = 'none';
-      });
-      item.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') return;
-        mmInsertImage(img.url);
-        closeMediaModal();
-      });
-      grid.appendChild(item);
-    });
-  } catch(e) {
-    document.getElementById('mm-repo-count').textContent = 'Error al cargar.';
-  }
-}
-
-async function mmDeleteImg(e, id, el) {
-  e.stopPropagation();
-  if (!confirm('¿Eliminar esta imagen del repositorio?')) return;
-  const fd = new FormData();
-  fd.append('_csrf', document.querySelector('input[name="_csrf"]')?.value || '');
-  const res  = await fetch('/admin/media/delete/' + id, { method: 'POST', body: fd });
-  const data = await res.json();
-  if (data.success) el.remove();
-}
-
-function mmInsertImage(url) {
-  if (!_activeQuill) return;
-  const range = _activeQuill.getSelection(true);
-  _activeQuill.insertEmbed(range ? range.index : 0, 'image', url);
-}
-
-// ── Registrar handler de imagen en instancia Quill ───────────
-function registerImageHandler(quillInstance) {
-  quillInstance.getModule('toolbar').addHandler('image', () => {
-    openMediaModal(quillInstance);
-  });
-}
-</script>
-<?php endif; ?>
-
 <?php if ($hasRichPanel): ?>
 <script>
-// ── Icon picker: sync selectedIcon via sipOnChange hook
+// â”€â”€ Icon picker: sync selectedIcon via sipOnChange hook
 window.sipOnChange = function(cls) { selectedIcon = cls; };
 let selectedIcon = <?= json_encode($seccionIcono) ?>;
 
-// ── Quill rich editor
+// â”€â”€ Quill rich editor
 const quillRich = new Quill('#quill-rich-editor', {
   theme: 'snow',
   modules: { toolbar: QUILL_TOOLBAR }
@@ -573,7 +336,7 @@ function setRichEditorMode(mode) {
   richEditorMode = mode;
 }
 
-// ── Guardar: serializa icono + texto como JSON en el hidden input del form meta
+// â”€â”€ Guardar: serializa icono + texto como JSON en el hidden input del form meta
 document.getElementById('save-rich-btn').addEventListener('click', function() {
   const richHtml = richEditorMode === 'html'
     ? document.getElementById('raw-rich-html').value

@@ -5,7 +5,7 @@
   <a href="/admin/portafolio" class="btn btn-secondary">← Volver</a>
 </div>
 
-<form method="POST" action="/admin/portafolio/store" enctype="multipart/form-data" class="admin-form">
+<form method="POST" action="/admin/portafolio/store" class="admin-form">
   <?= Security::csrfField() ?>
 
   <div class="form-row">
@@ -41,27 +41,14 @@
     <input type="hidden" name="descripcion_larga" id="desc-larga">
   </div>
 
-  <!-- ── Upload Dual ─────────────────────────────────────── -->
+  <!-- ── Imagen (Media Library) ──────────────────────────── -->
   <div class="form-group">
     <label>Imagen</label>
-    <div class="image-source-toggle">
-      <label class="radio-btn">
-        <input type="radio" name="imagen_source" value="local" checked onchange="toggleSource(this.value)">
-        📁 Local
-      </label>
-      <label class="radio-btn">
-        <input type="radio" name="imagen_source" value="imgbb" onchange="toggleSource(this.value)">
-        ☁️ ImgBB
-      </label>
-    </div>
-    <div id="source-local">
-      <input type="file" name="imagen" accept="image/*" id="file-local">
-    </div>
-    <div id="source-imgbb" style="display:none">
-      <input type="file" name="imagen" accept="image/*" id="file-imgbb">
-      <p style="color:#64748b;font-size:.85rem;margin:.5rem 0">— o pega una URL directamente —</p>
-      <input type="text" name="imagen_url_externa" placeholder="https://i.ibb.co/...">
-    </div>
+    <button type="button" onclick="openMediaForField('campo-imagen-url','img-preview-portafolio')" class="btn btn-secondary">
+      <i class="ri-image-add-line"></i> Seleccionar / Subir Imagen
+    </button>
+    <img id="img-preview-portafolio" style="display:none;max-width:200px;border-radius:8px;margin-top:.5rem;display:block">
+    <input type="hidden" id="campo-imagen-url" name="imagen_url_externa">
   </div>
 
   <div class="form-row">
@@ -92,7 +79,8 @@
 </form>
 
 <script>
-const quill = new Quill('#quill-editor', { theme: 'snow' });
+const quill = new Quill('#quill-editor', { theme: 'snow', modules: { toolbar: QUILL_TOOLBAR } });
+registerImageHandler(quill);
 let editorMode = 'visual';
 function setEditorMode(mode) {
   if (mode === 'html') {
@@ -115,8 +103,9 @@ document.querySelector('form').addEventListener('submit', () => {
   document.getElementById('desc-larga').value =
     editorMode === 'html' ? document.getElementById('raw-html').value : quill.root.innerHTML;
 });
-function toggleSource(val) {
-  document.getElementById('source-local').style.display = val === 'local' ? '' : 'none';
-  document.getElementById('source-imgbb').style.display = val === 'imgbb' ? '' : 'none';
-}
+// Sync preview when URL filled externally
+document.getElementById('campo-imagen-url').addEventListener('change', function() {
+  const p = document.getElementById('img-preview-portafolio');
+  p.src = this.value; p.style.display = this.value ? 'block' : 'none';
+});
 </script>
