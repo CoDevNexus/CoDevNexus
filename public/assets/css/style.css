@@ -60,7 +60,7 @@ img { max-width: 100%; height: auto; }
   border-bottom: 1px solid var(--border);
   padding: .9rem 2rem;
   display: flex; align-items: center; justify-content: space-between;
-  z-index: 100;
+  z-index: 10000;
 }
 .nav-logo {
   height: 36px;
@@ -88,7 +88,7 @@ img { max-width: 100%; height: auto; }
   display: none;
   position: fixed; inset: 0;
   background: rgba(0,0,0,.55);
-  z-index: 99;
+  z-index: 9998;
   backdrop-filter: blur(2px);
   transition: opacity .3s;
   opacity: 0;
@@ -104,12 +104,13 @@ img { max-width: 100%; height: auto; }
     background: rgba(11,15,25,.98);
     border-left: 1px solid var(--border);
     padding: 5rem 1.5rem 2rem;
-    transform: translateX(100%);
+    transform: translateX(110%);
     transition: transform .32s cubic-bezier(.4,0,.2,1);
-    z-index: 200;
+    z-index: 9999;
     overflow-y: auto;
+    visibility: hidden;
   }
-  .nav-links.open { transform: translateX(0); }
+  .nav-links.open { transform: translateX(0); visibility: visible; }
   .nav-links a {
     padding: .85rem 0;
     border-bottom: 1px solid var(--border);
