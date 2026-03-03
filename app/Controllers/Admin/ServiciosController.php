@@ -18,7 +18,7 @@ class ServiciosController extends Controller
 
     private function decodeServicios(array $seccion): array
     {
-        $raw = trim(strip_tags($seccion['contenido'] ?? ''));
+        $raw = trim($seccion['contenido'] ?? '');
         if (!$raw) return [];
         try { return json_decode($raw, true, 512, JSON_THROW_ON_ERROR); }
         catch (\Throwable) { return []; }

@@ -10,8 +10,9 @@ $contenidoRaw  = $seccion['contenido'] ?? '';
 $seccionIcono  = '';
 $seccionTexto  = $contenidoRaw;
 try {
-    $decoded = json_decode(trim(strip_tags($contenidoRaw)), true, 4, JSON_THROW_ON_ERROR);
-    if (isset($decoded['texto'])) {
+    // NO strip_tags aquí: el JSON puede contener HTML formateado en el campo 'texto'
+    $decoded = json_decode(trim($contenidoRaw), true, 4, JSON_THROW_ON_ERROR);
+    if (is_array($decoded) && isset($decoded['texto'])) {
         $seccionIcono = $decoded['icono'] ?? '';
         $seccionTexto = $decoded['texto'];
     }

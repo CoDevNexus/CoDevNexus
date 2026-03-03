@@ -104,7 +104,7 @@ class SeccionesController extends Controller
     // ── helpers ───────────────────────────────────────────
     private function decodeServicios(array $seccion): array
     {
-        $raw = trim(strip_tags($seccion['contenido'] ?? ''));
+        $raw = trim($seccion['contenido'] ?? '');
         if (!$raw) return [];
         try { return json_decode($raw, true, 512, JSON_THROW_ON_ERROR) ?? []; }
         catch (\Throwable) { return []; }
@@ -118,7 +118,7 @@ class SeccionesController extends Controller
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (!$row) return 0;
         try {
-            $items = json_decode(trim(strip_tags($row['contenido'] ?? '')), true);
+            $items = json_decode(trim($row['contenido'] ?? ''), true);
             return is_array($items) ? count($items) : 0;
         } catch (\Throwable) { return 0; }
     }
