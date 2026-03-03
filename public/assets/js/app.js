@@ -222,6 +222,44 @@
       </div>
     `;
 
+    // ── Media de fondo (image or video background)
+    const hm = heroParsed?.media;
+    if (hm && hm.type !== 'none' && hm.url) {
+      let mediaBgEl = null;
+      if (hm.type === 'image') {
+        const bg = document.createElement('div');
+        bg.className = 'hero-media-bg' + (hm.effect && hm.effect !== 'none' ? ' effect-' + hm.effect : '');
+        bg.style.backgroundImage = 'url(' + hm.url + ')';
+        if (hm.objectFit === 'contain') bg.style.backgroundSize = 'contain';
+        if (hm.effect === 'parallax') bg.style.backgroundAttachment = 'fixed';
+        el.insertBefore(bg, el.firstChild);
+        mediaBgEl = bg;
+      } else if (hm.type === 'video') {
+        const vid = document.createElement('video');
+        vid.className   = 'hero-media-video';
+        vid.autoplay    = true;
+        vid.muted       = true;
+        vid.loop        = true;
+        vid.playsInline = true;
+        vid.src         = hm.url;
+        el.insertBefore(vid, el.firstChild);
+        mediaBgEl = vid;
+      }
+      if (hm.overlay > 0) {
+        const ov = document.createElement('div');
+        ov.className    = 'hero-media-overlay';
+        ov.style.opacity = hm.overlay / 100;
+        if (mediaBgEl && mediaBgEl.nextSibling) {
+          el.insertBefore(ov, mediaBgEl.nextSibling);
+        } else {
+          el.insertBefore(ov, el.firstChild);
+        }
+      }
+      // Hide particles when media background is active
+      const pjs = el.querySelector('#particles-js');
+      if (pjs) pjs.style.display = 'none';
+    }
+
     // Particles
     if (window.particlesJS && typeof initParticles === 'function') {
       setTimeout(initParticles, 200);

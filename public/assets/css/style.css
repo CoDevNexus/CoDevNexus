@@ -109,6 +109,26 @@ img { max-width: 100%; height: auto; }
   position: absolute; inset: 0;
   z-index: 0;
 }
+/* Hero media background ─────────────────────────────────── */
+.hero-media-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  transform-origin: center;
+}
+.hero-media-bg.effect-zoom      { animation: hm-zoom 20s ease-in-out infinite alternate; }
+@keyframes hm-zoom   { from { transform: scale(1);               } to { transform: scale(1.12);               } }
+.hero-media-bg.effect-ken-burns { animation: hm-kb   28s ease-in-out infinite alternate; }
+@keyframes hm-kb     { 0%{ transform:scale(1) translate(0,0); } 100%{ transform:scale(1.15) translate(-2%,-3%); } }
+.hero-media-bg.effect-fade      { animation: hm-fade  3s ease-in forwards; }
+@keyframes hm-fade   { from { opacity: 0; } to { opacity: 1; } }
+.hero-media-overlay {
+  position: absolute; inset: 0; z-index: 0;
+  background: #0b0f19; pointer-events: none;
+}
+.hero-media-video {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+}
 .hero-content { position: relative; z-index: 1; max-width: 700px; }
 .hero-icon { font-size: 3.5rem; color: var(--cyan); margin-bottom: .6rem; line-height: 1; text-shadow: 0 0 30px var(--glow); }
 

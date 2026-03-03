@@ -241,7 +241,7 @@ function _mmInsert(url) {
     _mmQuill.insertEmbed(range ? range.index : 0, 'image', url);
   } else if (_mmMode === 'field' && _mmFieldInput) {
     const inp = document.getElementById(_mmFieldInput);
-    if (inp) inp.value = url;
+    if (inp) { inp.value = url; inp.dispatchEvent(new Event('input')); }
     if (_mmFieldPreview) {
       const img = document.getElementById(_mmFieldPreview);
       if (img) { img.src = url; img.style.display = 'block'; }

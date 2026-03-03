@@ -42,6 +42,19 @@ if ($tipo === 'hero') {
 }
 $heroBloques = $heroBloquesDef;
 
+// Media de fondo (solo hero)
+$heroMedia = ['type'=>'none','url'=>'','effect'=>'none','overlay'=>50,'objectFit'=>'cover'];
+if ($tipo === 'hero' && isset($decoded) && is_array($decoded) && isset($decoded['media'])) {
+    $m = $decoded['media'];
+    $heroMedia = [
+        'type'      => in_array($m['type'] ?? '', ['image','video']) ? $m['type'] : 'none',
+        'url'       => $m['url'] ?? '',
+        'effect'    => in_array($m['effect'] ?? '', ['zoom','ken-burns','parallax','fade']) ? $m['effect'] : 'none',
+        'overlay'   => max(0, min(90, (int)($m['overlay'] ?? 50))),
+        'objectFit' => ($m['objectFit'] ?? 'cover') === 'contain' ? 'contain' : 'cover',
+    ];
+}
+
 ?>
 
 <div class="page-header" style="margin-bottom:1.2rem">
@@ -187,6 +200,90 @@ $heroBloques = $heroBloquesDef;
               </div>
               <?php endforeach; ?>
             </div>
+          </div>
+          <?php endif; ?>
+
+          <?php if ($tipo === 'hero'): ?>
+          <!-- ── Media de fondo ── -->
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+              <span style="font-size:.83rem;font-weight:600;color:#94a3b8"><i class="ri-film-line"></i> Media de fondo</span>
+            </div>
+            <!-- Tipo -->
+            <div style="display:flex;gap:.4rem;margin-bottom:.75rem">
+              <?php foreach (['none'=>'Ninguno','image'=>'Imagen','video'=>'Video'] as $tv => $tl): ?>
+              <label style="flex:1;text-align:center;cursor:pointer">
+                <input type="radio" name="hm_type" value="<?= $tv ?>" <?= $heroMedia['type']===$tv?'checked':'' ?> style="display:none" onchange="hmSwitchType('<?= $tv ?>')">
+                <span class="hm-type-btn <?= $heroMedia['type']===$tv?'active':'' ?>"
+                  style="display:block;border:1px solid <?= $heroMedia['type']===$tv?'#00d4ff':'#2a3f55' ?>;
+                         border-radius:7px;padding:.4rem .3rem;font-size:.8rem;
+                         color:<?= $heroMedia['type']===$tv?'#00d4ff':'#64748b' ?>;
+                         background:<?= $heroMedia['type']===$tv?'rgba(0,212,255,.07)':'none' ?>;
+                         transition:all .15s"><?= $tl ?></span>
+              </label>
+              <?php endforeach; ?>
+            </div>
+
+            <!-- Panel Imagen -->
+            <div id="hm-img-panel" style="display:<?= $heroMedia['type']==='image'?'flex':'none' ?>;flex-direction:column;gap:.65rem">
+              <div style="display:flex;gap:.4rem;align-items:center">
+                <input type="text" id="hm-img-url" placeholder="https://... o usa la biblioteca"
+                  value="<?= Security::escape($heroMedia['url']) ?>"
+                  oninput="hmSync()" onchange="hmPreview()"
+                  style="flex:1;background:#0b0f19;border:1px solid #1e2d40;border-radius:6px;padding:.45rem .7rem;color:#e2e8f0;font-size:.82rem;outline:none">
+                <button type="button" onclick="openMediaForField('hm-img-url','hm-img-preview')"
+                  style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);border-radius:6px;padding:.45rem .75rem;color:#00d4ff;cursor:pointer;font-size:.82rem;white-space:nowrap">
+                  <i class="ri-image-2-line"></i> Biblioteca
+                </button>
+              </div>
+              <img id="hm-img-preview"
+                src="<?= Security::escape($heroMedia['url']) ?>"
+                style="display:<?= $heroMedia['url']?'block':'none' ?>;max-height:100px;border-radius:6px;border:1px solid #1e2d40;object-fit:cover;width:100%"
+                onerror="this.style.display='none'">
+              <div style="display:flex;gap:.5rem;align-items:center">
+                <label style="font-size:.78rem;color:#64748b;white-space:nowrap">Efecto</label>
+                <select id="hm-effect" onchange="hmSync()"
+                  style="flex:1;background:#0b0f19;border:1px solid #1e2d40;border-radius:6px;padding:.35rem .6rem;color:#e2e8f0;font-size:.82rem">
+                  <?php foreach (['none'=>'Ninguno','zoom'=>'Zoom suave','ken-burns'=>'Ken Burns','parallax'=>'Parallax','fade'=>'Fade in'] as $ev=>$el): ?>
+                  <option value="<?= $ev ?>" <?= $heroMedia['effect']===$ev?'selected':'' ?>><?= $el ?></option>
+                  <?php endforeach; ?>
+                </select>
+                <label style="font-size:.78rem;color:#64748b;white-space:nowrap">Ajuste</label>
+                <select id="hm-fit" onchange="hmSync()"
+                  style="background:#0b0f19;border:1px solid #1e2d40;border-radius:6px;padding:.35rem .6rem;color:#e2e8f0;font-size:.82rem">
+                  <option value="cover"   <?= $heroMedia['objectFit']==='cover'?'selected':'' ?>>Cover</option>
+                  <option value="contain" <?= $heroMedia['objectFit']==='contain'?'selected':'' ?>>Contain</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Panel Video -->
+            <div id="hm-vid-panel" style="display:<?= $heroMedia['type']==='video'?'flex':'none' ?>;flex-direction:column;gap:.65rem">
+              <input type="text" id="hm-vid-url" placeholder="URL directa .mp4 / .webm"
+                value="<?= Security::escape($heroMedia['type']==='video'?$heroMedia['url']:'') ?>"
+                oninput="hmSync()"
+                style="background:#0b0f19;border:1px solid #1e2d40;border-radius:6px;padding:.45rem .7rem;color:#e2e8f0;font-size:.82rem;outline:none;width:100%">
+              <div style="display:flex;gap:.4rem;align-items:center">
+                <label style="font-size:.76rem;color:#64748b;cursor:pointer;flex:1;display:flex;align-items:center;gap:.4rem;border:1px dashed #2a3f55;border-radius:6px;padding:.4rem .6rem">
+                  <input type="file" id="hm-vid-file" accept="video/mp4,video/webm" style="display:none" onchange="hmUploadVideo(this)">
+                  <i class="ri-upload-cloud-line" style="color:#00d4ff"></i>
+                  <span id="hm-vid-file-label">Subir video local (.mp4/.webm)</span>
+                </label>
+              </div>
+              <p style="font-size:.73rem;color:#475569;margin:-.3rem 0 0">El video se reproducirá en bucle, sin sonido y automáticamente.</p>
+            </div>
+
+            <!-- Overlay (imagen y video) -->
+            <div id="hm-overlay-wrap" style="display:<?= $heroMedia['type']!=='none'?'flex':'none' ?>;align-items:center;gap:.65rem;margin-top:.25rem">
+              <label style="font-size:.78rem;color:#64748b;white-space:nowrap">Oscurecer</label>
+              <input type="range" id="hm-overlay" min="0" max="90" step="5"
+                value="<?= $heroMedia['overlay'] ?>"
+                oninput="document.getElementById('hm-overlay-val').textContent=this.value+'%';hmSync()"
+                style="flex:1">
+              <span id="hm-overlay-val" style="font-size:.78rem;color:#94a3b8;min-width:28px"><?= $heroMedia['overlay'] ?>%</span>
+            </div>
+
+            <input type="hidden" id="hm-media-data" value="<?= htmlspecialchars(json_encode($heroMedia), ENT_QUOTES) ?>">
           </div>
           <?php endif; ?>
 
@@ -438,9 +535,65 @@ document.getElementById('save-rich-btn').addEventListener('click', function() {
       orden:   i
     }));
   }
+  const hmEl = document.getElementById('hm-media-data');
+  if (hmEl) { try { payload.media = JSON.parse(hmEl.value || '{}'); } catch(e) {} }
   document.getElementById('contenido-input').value = JSON.stringify(payload);
   document.querySelector('.section-edit-meta form').submit();
 });
+
+// ── Media de fondo helpers ─────────────────────────────────────
+function hmSwitchType(t) {
+  document.getElementById('hm-img-panel').style.display  = t === 'image' ? 'flex' : 'none';
+  document.getElementById('hm-vid-panel').style.display  = t === 'video' ? 'flex' : 'none';
+  document.getElementById('hm-overlay-wrap').style.display = t !== 'none' ? 'flex' : 'none';
+  document.querySelectorAll('.hm-type-btn').forEach(btn => {
+    const active = btn.closest('label').querySelector('input').value === t;
+    btn.style.borderColor = active ? '#00d4ff' : '#2a3f55';
+    btn.style.color       = active ? '#00d4ff' : '#64748b';
+    btn.style.background  = active ? 'rgba(0,212,255,.07)' : 'none';
+  });
+  hmSync();
+}
+function hmSync() {
+  const t       = document.querySelector('input[name="hm_type"]:checked')?.value || 'none';
+  const url     = t === 'image' ? (document.getElementById('hm-img-url')?.value || '')
+                                : (document.getElementById('hm-vid-url')?.value || '');
+  const effect  = document.getElementById('hm-effect')?.value  || 'none';
+  const overlay = parseInt(document.getElementById('hm-overlay')?.value || 50);
+  const fit     = document.getElementById('hm-fit')?.value     || 'cover';
+  document.getElementById('hm-media-data').value = JSON.stringify({ type:t, url, effect, overlay, objectFit:fit });
+}
+function hmPreview() {
+  const url = document.getElementById('hm-img-url').value.trim();
+  const p   = document.getElementById('hm-img-preview');
+  if (url) { p.src = url; p.style.display = 'block'; } else { p.style.display = 'none'; }
+  hmSync();
+}
+// openMediaForField callback already sets the input value; also run hmSync
+document.getElementById('hm-img-url')?.addEventListener('input', () => { hmPreview(); hmSync(); });
+document.getElementById('hm-vid-url')?.addEventListener('input', hmSync);
+async function hmUploadVideo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const label = document.getElementById('hm-vid-file-label');
+  label.textContent = 'Subiendo…';
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('driver', 'local');
+  try {
+    const res  = await fetch('/admin/media/upload', { method:'POST', body:fd });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('hm-vid-url').value = data.url;
+      label.textContent = file.name;
+      hmSync();
+    } else {
+      label.textContent = '⚠ ' + (data.message || 'Error al subir.');
+    }
+  } catch(e) { label.textContent = '⚠ Error de red.'; }
+}
+// Init: sync hidden input on page ready
+if (document.getElementById('hm-media-data')) hmSync();
 </script>
 <?php endif; ?>
 
