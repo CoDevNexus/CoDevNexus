@@ -107,19 +107,6 @@
    Media Library — lógica compartida
    ══════════════════════════════════════════════════════════════ */
 
-/* ── QUILL toolbar global ───────────────────────────────────── */
-const QUILL_TOOLBAR = [
-  [{ header: [1, 2, 3, 4, false] }],
-  [{ size: ['small', false, 'large', 'huge'] }],
-  ['bold', 'italic', 'underline', 'strike'],
-  [{ color: [] }, { background: [] }],
-  [{ align: [] }],
-  [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-  ['blockquote', 'code-block'],
-  ['link', 'image', 'video'],
-  ['clean']
-];
-
 /* ── modo: 'quill' = insertar en editor | 'field' = rellenar input ── */
 let _mmMode         = 'quill';   // 'quill' | 'field'
 let _mmQuill        = null;
@@ -320,10 +307,4 @@ async function mmDeleteRepo(e, id, el) {
   if (data.success) el.remove();
 }
 
-/* ── registerImageHandler (para Quill) ───────────────────────── */
-function registerImageHandler(quillInstance) {
-  quillInstance.getModule('toolbar').addHandler('image', () => {
-    openMediaModal(quillInstance);
-  });
-}
 </script>

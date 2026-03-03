@@ -44,6 +44,24 @@ function sectionIcon(string $tipo): string {
   <!-- Quill.js -->
   <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <script>
+  const QUILL_TOOLBAR = [
+    [{ header: [1, 2, 3, 4, false] }],
+    [{ size: ['small', false, 'large', 'huge'] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+    ['blockquote', 'code-block'],
+    ['link', 'image', 'video'],
+    ['clean']
+  ];
+  function registerImageHandler(quillInstance) {
+    quillInstance.getModule('toolbar').addHandler('image', () => {
+      openMediaModal(quillInstance);
+    });
+  }
+  </script>
   <!-- Devicons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
   <!-- Font Awesome 6 Free -->
