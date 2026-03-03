@@ -93,4 +93,9 @@ $router->group('/admin', [AuthMiddleware::class], function ($r) {
     $r->post('/configuracion/test-imgbb',      \App\Controllers\Admin\ConfiguracionController::class . '@testImgbb',      [\App\Middleware\CsrfMiddleware::class]);
     $r->post('/configuracion/upload-logo',     \App\Controllers\Admin\ConfiguracionController::class . '@uploadLogo',     [\App\Middleware\CsrfMiddleware::class]);
     $r->post('/configuracion/change-password', \App\Controllers\Admin\ConfiguracionController::class . '@changePassword', [\App\Middleware\CsrfMiddleware::class]);
+
+    // Biblioteca de medios (imágenes para editor Quill)
+    $r->post('/media/upload',       \App\Controllers\Admin\MediaController::class . '@upload');
+    $r->get( '/media/list',         \App\Controllers\Admin\MediaController::class . '@list');
+    $r->post('/media/delete/{id}',  \App\Controllers\Admin\MediaController::class . '@delete', [\App\Middleware\CsrfMiddleware::class]);
 });

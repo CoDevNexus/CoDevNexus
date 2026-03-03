@@ -300,6 +300,18 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   `intentado_en` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`), KEY `idx_ip` (`ip`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `media_library` (
+  `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `url`         VARCHAR(500) NOT NULL,
+  `driver`      ENUM('local','imgbb') NOT NULL DEFAULT 'local',
+  `filename`    VARCHAR(255),
+  `mime`        VARCHAR(80),
+  `size`        INT UNSIGNED DEFAULT 0,
+  `creado_en`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_driver` (`driver`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ";
 }
 

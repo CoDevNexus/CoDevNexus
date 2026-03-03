@@ -304,6 +304,56 @@ try {
 </div>
 
 <?php if ($hasRichPanel || $hasContent): ?>
+
+<!-- ── Modal biblioteca de medios ──────────────────────────── -->
+<div id="media-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);align-items:center;justify-content:center">
+  <div style="background:#111827;border:1px solid #1e2d40;border-radius:14px;width:min(760px,95vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;border-bottom:1px solid #1e2d40">
+      <h3 style="margin:0;font-size:.95rem;color:#00d4ff"><i class="ri-image-2-line"></i> Insertar imagen</h3>
+      <button onclick="closeMediaModal()" style="background:none;border:none;color:#94a3b8;font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
+    </div>
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid #1e2d40">
+      <button class="mm-tab active" id="mm-tab-upload" onclick="mmTab('upload')" style="flex:1;padding:.7rem;background:none;border:none;cursor:pointer;color:#00d4ff;border-bottom:2px solid #00d4ff;font-size:.85rem"><i class="ri-upload-2-line"></i> Subir nueva</button>
+      <button class="mm-tab" id="mm-tab-repo"   onclick="mmTab('repo')"   style="flex:1;padding:.7rem;background:none;border:none;cursor:pointer;color:#64748b;border-bottom:2px solid transparent;font-size:.85rem"><i class="ri-grid-line"></i> Repositorio</button>
+    </div>
+    <!-- Panel upload -->
+    <div id="mm-panel-upload" style="padding:1.4rem;display:flex;flex-direction:column;gap:1rem">
+      <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px dashed #2a3f55;border-radius:10px;padding:2rem;cursor:pointer;color:#64748b;gap:.5rem;transition:border-color .2s" id="mm-drop-zone">
+        <input type="file" id="mm-file-input" accept="image/*" style="display:none">
+        <i class="ri-image-add-line" style="font-size:2rem;color:#00d4ff"></i>
+        <span style="font-size:.9rem">Haz clic o arrastra una imagen aquí</span>
+        <span style="font-size:.75rem;color:#475569">JPG, PNG, WEBP, GIF — máx. 5 MB</span>
+      </label>
+      <div id="mm-upload-preview" style="display:none;text-align:center">
+        <img id="mm-preview-img" style="max-height:160px;border-radius:8px;border:1px solid #2a3f55">
+        <p id="mm-preview-name" style="font-size:.8rem;color:#64748b;margin:.4rem 0 0"></p>
+      </div>
+      <div id="mm-upload-progress" style="display:none">
+        <div style="height:4px;background:#1e2d40;border-radius:4px;overflow:hidden">
+          <div id="mm-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#00d4ff,#7c3aed);transition:width .3s"></div>
+        </div>
+        <p style="font-size:.8rem;color:#64748b;margin:.4rem 0 0;text-align:center">Subiendo…</p>
+      </div>
+      <div id="mm-upload-error" style="display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:.6rem .9rem;font-size:.85rem;color:#fca5a5"></div>
+      <button id="mm-upload-btn" onclick="mmUpload()" disabled
+        style="background:linear-gradient(135deg,#00d4ff,#7c3aed);border:none;color:#fff;padding:.65rem 1.4rem;border-radius:8px;cursor:pointer;font-size:.9rem;font-weight:600;opacity:.4">
+        <i class="ri-upload-cloud-line"></i> Subir e insertar
+      </button>
+    </div>
+    <!-- Panel repositorio -->
+    <div id="mm-panel-repo" style="display:none;padding:1rem;overflow-y:auto;flex:1">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+        <span style="font-size:.8rem;color:#64748b" id="mm-repo-count">Cargando…</span>
+        <button onclick="mmLoadRepo()" style="background:none;border:1px solid #2a3f55;color:#94a3b8;padding:.3rem .7rem;border-radius:6px;cursor:pointer;font-size:.78rem"><i class="ri-refresh-line"></i> Actualizar</button>
+      </div>
+      <div id="mm-repo-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem"></div>
+      <p id="mm-repo-empty" style="display:none;text-align:center;color:#475569;font-size:.85rem;padding:2rem">Sin imágenes subidas aún.</p>
+    </div>
+  </div>
+</div>
+
 <script>
 const QUILL_TOOLBAR = [
   [{ header: [1, 2, 3, 4, false] }],
@@ -316,6 +366,177 @@ const QUILL_TOOLBAR = [
   ['link', 'image', 'video'],
   ['clean']
 ];
+
+// ── Media modal ───────────────────────────────────────────────
+let _activeQuill = null;
+
+function openMediaModal(quillInstance) {
+  _activeQuill = quillInstance;
+  document.getElementById('media-modal').style.display = 'flex';
+  mmTab('upload');
+  // Reset upload panel
+  document.getElementById('mm-file-input').value = '';
+  document.getElementById('mm-upload-preview').style.display = 'none';
+  document.getElementById('mm-upload-error').style.display   = 'none';
+  document.getElementById('mm-upload-progress').style.display = 'none';
+  document.getElementById('mm-upload-btn').disabled  = true;
+  document.getElementById('mm-upload-btn').style.opacity = '.4';
+}
+
+function closeMediaModal() {
+  document.getElementById('media-modal').style.display = 'none';
+  _activeQuill = null;
+}
+
+// Cerrar al hacer click fuera del contenido
+document.getElementById('media-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeMediaModal();
+});
+
+function mmTab(tab) {
+  ['upload','repo'].forEach(t => {
+    document.getElementById('mm-panel-' + t).style.display = t === tab ? (t === 'repo' ? 'block' : 'flex') : 'none';
+    const btn = document.getElementById('mm-tab-' + t);
+    btn.style.color        = t === tab ? '#00d4ff' : '#64748b';
+    btn.style.borderBottom = t === tab ? '2px solid #00d4ff' : '2px solid transparent';
+  });
+  if (tab === 'repo') mmLoadRepo();
+}
+
+// ── File pick / drag & drop ───────────────────────────────────
+const mmFileInput = document.getElementById('mm-file-input');
+const mmDropZone  = document.getElementById('mm-drop-zone');
+
+mmDropZone.addEventListener('click', () => mmFileInput.click());
+mmDropZone.addEventListener('dragover', e => { e.preventDefault(); mmDropZone.style.borderColor = '#00d4ff'; });
+mmDropZone.addEventListener('dragleave', () => { mmDropZone.style.borderColor = '#2a3f55'; });
+mmDropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  mmDropZone.style.borderColor = '#2a3f55';
+  if (e.dataTransfer.files[0]) mmSetFile(e.dataTransfer.files[0]);
+});
+mmFileInput.addEventListener('change', () => { if (mmFileInput.files[0]) mmSetFile(mmFileInput.files[0]); });
+
+function mmSetFile(file) {
+  document.getElementById('mm-upload-error').style.display = 'none';
+  const preview = document.getElementById('mm-upload-preview');
+  document.getElementById('mm-preview-img').src  = URL.createObjectURL(file);
+  document.getElementById('mm-preview-name').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+  preview.style.display = 'block';
+  document.getElementById('mm-upload-btn').disabled  = false;
+  document.getElementById('mm-upload-btn').style.opacity = '1';
+}
+
+// ── Upload ────────────────────────────────────────────────────
+async function mmUpload() {
+  const file = mmFileInput.files[0];
+  if (!file) return;
+  document.getElementById('mm-upload-error').style.display   = 'none';
+  document.getElementById('mm-upload-progress').style.display = 'flex';
+  document.getElementById('mm-upload-progress').style.flexDirection = 'column';
+  document.getElementById('mm-upload-btn').disabled = true;
+  document.getElementById('mm-progress-bar').style.width = '30%';
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  try {
+    const res  = await fetch('/admin/media/upload', { method: 'POST', body: fd });
+    document.getElementById('mm-progress-bar').style.width = '100%';
+    const data = await res.json();
+    if (data.success) {
+      mmInsertImage(data.url);
+      closeMediaModal();
+    } else {
+      showMmError(data.message || 'Error al subir.');
+    }
+  } catch (err) {
+    showMmError('Error de red: ' + err.message);
+  } finally {
+    document.getElementById('mm-upload-progress').style.display = 'none';
+    document.getElementById('mm-upload-btn').disabled = false;
+    document.getElementById('mm-progress-bar').style.width = '0%';
+  }
+}
+
+function showMmError(msg) {
+  const el = document.getElementById('mm-upload-error');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = 'block';
+}
+
+// ── Repositorio ───────────────────────────────────────────────
+async function mmLoadRepo() {
+  document.getElementById('mm-repo-count').textContent = 'Cargando…';
+  document.getElementById('mm-repo-empty').style.display = 'none';
+  document.getElementById('mm-repo-grid').innerHTML = '';
+  try {
+    const res  = await fetch('/admin/media/list');
+    const data = await res.json();
+    const grid = document.getElementById('mm-repo-grid');
+    if (!data.success || !data.data.length) {
+      document.getElementById('mm-repo-empty').style.display = 'block';
+      document.getElementById('mm-repo-count').textContent = '0 imágenes';
+      return;
+    }
+    document.getElementById('mm-repo-count').textContent = data.data.length + ' imagen(es)';
+    data.data.forEach(img => {
+      const item = document.createElement('div');
+      item.style.cssText = 'position:relative;cursor:pointer;border:2px solid #1e2d40;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#0f172a;transition:border-color .15s';
+      item.innerHTML = `
+        <img src="${img.url}" alt="${img.filename || ''}"
+          style="width:100%;height:100%;object-fit:cover;display:block"
+          onerror="this.parentElement.style.display='none'">
+        <div class="mm-repo-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem">
+          <i class="ri-check-line" style="color:#00d4ff;font-size:1.4rem"></i>
+          <span style="font-size:.7rem;color:#e2e8f0">Insertar</span>
+        </div>
+        <button onclick="mmDeleteImg(event,${img.id},this.closest('div'))" title="Eliminar"
+          style="position:absolute;top:3px;right:3px;background:rgba(239,68,68,.8);border:none;color:#fff;width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:.75rem;line-height:1;display:none">✕</button>`;
+      item.addEventListener('mouseenter', () => {
+        item.style.borderColor = '#00d4ff';
+        item.querySelector('.mm-repo-overlay').style.opacity = '1';
+        item.querySelector('button').style.display = 'block';
+      });
+      item.addEventListener('mouseleave', () => {
+        item.style.borderColor = '#1e2d40';
+        item.querySelector('.mm-repo-overlay').style.opacity = '0';
+        item.querySelector('button').style.display = 'none';
+      });
+      item.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') return;
+        mmInsertImage(img.url);
+        closeMediaModal();
+      });
+      grid.appendChild(item);
+    });
+  } catch(e) {
+    document.getElementById('mm-repo-count').textContent = 'Error al cargar.';
+  }
+}
+
+async function mmDeleteImg(e, id, el) {
+  e.stopPropagation();
+  if (!confirm('¿Eliminar esta imagen del repositorio?')) return;
+  const fd = new FormData();
+  fd.append('_csrf', document.querySelector('input[name="_csrf"]')?.value || '');
+  const res  = await fetch('/admin/media/delete/' + id, { method: 'POST', body: fd });
+  const data = await res.json();
+  if (data.success) el.remove();
+}
+
+function mmInsertImage(url) {
+  if (!_activeQuill) return;
+  const range = _activeQuill.getSelection(true);
+  _activeQuill.insertEmbed(range ? range.index : 0, 'image', url);
+}
+
+// ── Registrar handler de imagen en instancia Quill ───────────
+function registerImageHandler(quillInstance) {
+  quillInstance.getModule('toolbar').addHandler('image', () => {
+    openMediaModal(quillInstance);
+  });
+}
 </script>
 <?php endif; ?>
 
@@ -330,7 +551,8 @@ const quillRich = new Quill('#quill-rich-editor', {
   theme: 'snow',
   modules: { toolbar: QUILL_TOOLBAR }
 });
-quillRich.root.innerHTML = <?= json_encode($seccionTexto, JSON_HEX_TAG) ?>;
+registerImageHandler(quillRich);
+quillRich.root.innerHTML = <?= json_encode($seccionTexto, JSON_HEX_TAG) ?>;;
 
 let richEditorMode = 'visual';
 function setRichEditorMode(mode) {
@@ -369,6 +591,7 @@ const quill = new Quill('#quill-editor', {
   theme: 'snow',
   modules: { toolbar: QUILL_TOOLBAR }
 });
+registerImageHandler(quill);
 quill.root.innerHTML = <?= json_encode($seccion['contenido'] ?? '', JSON_HEX_TAG) ?>;
 let editorMode = 'visual';
 function setEditorMode(mode) {
